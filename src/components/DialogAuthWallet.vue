@@ -83,6 +83,7 @@
   import DialogConfirm from '@/components/DialogConfirm'
   import nemWrapper from '@/js/nem_wrapper'
   import ModelWalletNem from '@/js/model/model_wallet_nem'
+  import cryptoWrapper from '@/js/crypto_wrapper'
 
   export default {
     data: () => ({
@@ -138,7 +139,9 @@
       },
       createData () {
         this.dialogTitle = 'ウォレット作成'
-        dbWrapper.setItem(dbWrapper.KEY_AUTH_PASSWORD, this.password)
+        let encPass = cryptoWrapper.encryptAES(this.password, this.password)
+        console.log(encPass)
+        dbWrapper.setItem(dbWrapper.KEY_AUTH_PASSWORD, encPass)
           .then((result) => {
             let model = new ModelWalletNem()
             model.account = nemWrapper.createWallet('nem_fest', this.password)
@@ -164,7 +167,9 @@
         this.dialogTitle = 'パスワード'
         dbWrapper.getItem(dbWrapper.KEY_AUTH_PASSWORD)
           .then((result) => {
-            if (this.password === result) {
+            let decPass = cryptoWrapper.decryptAES(result, this.password)
+            console.log(decPass)
+            if (this.password === decPass) {
               this.isError = false
               this.$emit('dialog-auth-wallet-notify', 'auth_success')
               this.$emit('dialog-auth-wallet-close', 'close')

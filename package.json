@@ -19,6 +19,7 @@
     "axios": "^0.18.0",
     "axios-jsonp-pro": "^1.1.3",
     "babel-preset-es2015": "^6.24.1",
+    "crypto-js": "^3.1.9-1",
     "ecl": "0.0.4",
     "encoding-japanese": "^1.0.28",
     "fs": "0.0.1-security",
