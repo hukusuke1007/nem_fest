@@ -178,6 +178,14 @@ exports.createWallet = (name) => {
   return account
 }
 
+// ウォレット作成.
+exports.createWallet = (name, pass) => {
+  const password = new Password(pass)
+  const account = SimpleWallet.create(name, password)
+  console.log(account)
+  return account
+}
+
 // 秘密鍵からウォレット作成.
 exports.createWalletWithPrivateKey = (name, privateKey) => {
   const password = new Password(PASSWORD)

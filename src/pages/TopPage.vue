@@ -13,18 +13,17 @@
             </div>
             <v-card-text><div v-html="description" style="text-align: left;"></div></v-card-text>
             <div style="margin: 100px 0px 32px 0px;">
-              <v-btn large block @click="tapCreate">ウォレットを作成する</v-btn>
+              <v-btn large block @click="tapCreate">{{ createBtnName }}</v-btn>
             </div>
-            <payPassword :name="aaa" :length="4" :value="pass"
-              v-on:input="inputPass"
-              v-on:focus="forcusPass"
-              v-on:clear="clearPass">
-              </payPassword>
             <br>
           </v-flex>
           <v-flex v-else>
             ウォレットあったよ〜
           </v-flex>
+
+          <DialogAuthWallet v-bind:dialogVal="isShowAuthWallet"
+                       v-on:dialog-auth-wallet-close="tapAuthWalletClose"
+                       v-on:dialog-auth-wallet-notify="tapAuthWalletNotify"></DialogAuthWallet>
         </v-card>
       </v-layout>
      </v-flex>
@@ -34,44 +33,48 @@
 
 <script>
   import dbWrapper from '@/js/local_database_wrapper'
-  import payPassword from 'vue-pay-password'
-  import 'vue-pay-password/dist/vue-pay-password.css'
-
+  import DialogAuthWallet from '@/components/DialogAuthWallet'
   export default {
     name: 'topPage',
     data: () => ({
-      password: '',
+      createBtnName: 'ウォレットを作成する',
       isExistWallet: false,
+      isShowAuthWallet: false,
       description: 'このウォレットの説明文が入ります<br>ユキちゃんへ相談<br>・送受金している最中と完了したときのUIについて<br>・送受金履歴どうしようか<br>・送金画面はプッシュかモーダルか'
     }),
     components: {
-      payPassword
+      DialogAuthWallet
     },
     mounted () {
       this.getWallet()
     },
     methods: {
       getWallet () {
-        let id = 0
-        dbWrapper.getItemArray(dbWrapper.KEY_WALLET_INFO, id)
+        dbWrapper.getItem(dbWrapper.KEY_WALLET_INFO)
           .then((result) => {
             if (result) {
-              this.isExistWallet = true
+              this.createBtnName = 'パスワードを入力する'
+              // this.isExistWallet = true
+              this.isShowAuthWallet = true
+            } else {
+              this.createBtnName = 'ウォレットを作成する'
             }
           }).catch((err) => {
             console.error(err)
           })
       },
       tapCreate () {
+        this.isShowAuthWallet = true
       },
-      inputPass (val) {
-        console.log(val)
+      tapAuthWalletClose (status) {
+        this.isShowAuthWallet = false
       },
-      forcusPass () {
-        console.log('forcus')
-      },
-      clearPass () {
-        console.log('clear')
+      tapAuthWalletNotify (status) {
+        console.log(status)
+        if (status === 'created' || status === 'auth_success') {
+          console.log('go to next page')
+          this.isExistWallet = true
+        }
       }
     }
   }
