@@ -31,6 +31,7 @@
     "tls": "0.0.1",
     "vue": "^2.5.2",
     "vue-localforage": "^0.2.5",
+    "vue-pay-password": "0.0.3",
     "vue-qrcode-reader": "^0.7.2",
     "vue-qriously": "^1.1.1",
     "vue-router": "^3.0.1",

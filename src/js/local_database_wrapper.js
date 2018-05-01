@@ -1,7 +1,7 @@
 import localForage from 'localforage'
 localForage.setDriver(localForage.INDEXEDDB)
 
-// データーベースのkey.
+// データーベース
 const KEY_WALLET_INFO = 'key_wallet_info'
 const KEY_INVOICE = 'key_invoice'
 
