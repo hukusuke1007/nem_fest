@@ -1,7 +1,7 @@
 {
-  "name": "Office NEM wallet",
-  "short_name": "Office NEM",
-  "description": "This app is NEM wallet for Japan Office.",
+  "name": "NEM fest wallet",
+  "short_name": "NEM fest",
+  "description": "This app is NEM wallet for NEM fest.",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",
