@@ -6,9 +6,9 @@
    scrollable
   >
   <v-card flat>
-      <v-toolbar card color="blue-grey lighten-5" dark tabs>
+      <v-toolbar card color="blue-grey lighten-5" dark>
         <v-btn icon @click.native="close()" dark>
-          <v-icon>arrow_back</v-icon>
+          <v-icon color="primary">arrow_back</v-icon>
         </v-btn>
         <v-toolbar-title class="black--text">受け取る</v-toolbar-title>
       </v-toolbar>
@@ -113,9 +113,9 @@
         let toastMsg = 'コピーしました。'
         this.$toasted.show(toastMsg, {
           theme: 'outline',
-          position: 'bottom-center',
+          position: 'top-center',
           icon: 'assignment',
-          fullWidth: true,
+          fitToScreen: true,
           duration: 2000
         })
       },
@@ -131,8 +131,5 @@
 .btnLarge {
   font-color: white;
   height: 60px;
-}
-.toast {
-  text-align: center;
 }
 </style>
