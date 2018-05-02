@@ -112,11 +112,11 @@ const webpackConfig = merge(baseWebpackConfig, {
     //  stripPrefix: 'dist/'
     // })
     new workboxPlugin.GenerateSW({
-      cacheId: 'wallet',
+      cacheId: 'nem_fest',
       globDirectory: config.build.assetsRoot,
       globPatterns: ['**/*.{html,js,css}'],
       swDest: path.join(config.build.assetsRoot, 'service-worker.js'),
-      skipWaiting: false,
+      skipWaiting: true,
       clientsClaim: true,
       runtimeCaching: [
       {
@@ -125,7 +125,8 @@ const webpackConfig = merge(baseWebpackConfig, {
          options: {
            cacheName: 'api',
            expiration: {
-             maxAgeSeconds: 60 * 60 * 12
+             maxAgeSeconds: 60 * 60 * 24,
+             maxEntries: 10
            }
          }
        }
