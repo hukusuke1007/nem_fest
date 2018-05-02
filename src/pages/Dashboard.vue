@@ -12,12 +12,8 @@
             <div style="text-align: center;">fest<font size="5" style="margin-left: 8px;">{{ festBalance }}</font></div>
             <v-flex>
               <v-btn color="primary" class="btnLarge" large block @click="tapShowAccount">受け取る</v-btn>
-            </v-flex>
-            <v-flex>
               <v-btn color="primary" class="btnMedium" large @click="tapSend">送金する</v-btn>
               <v-btn color="primary" class="btnMedium" large @click="tapSendQRcode">QRコード<br>から送る</v-btn>
-            </v-flex>
-            <v-flex>
               <v-btn color="grey lighten-4" class="btnLarge" large block @click="tapShowHistory">履歴を見る</v-btn>
               <v-btn color="grey lighten-4" class="black--text" large @click="tapShowPrivateKey">秘密鍵を表示する</v-btn>
               <v-btn flat large block @click="tapWalletReset">ウォレットをリセットする</v-btn>
@@ -27,11 +23,14 @@
             <v-card-text><div v-html="description" style="text-align: left;"></div></v-card-text>
           </v-flex>
 
-          <!--
-          <DialogAuthWallet v-bind:dialogVal="isShowAuthWallet"
-                       v-on:dialog-auth-wallet-close="tapAuthWalletClose"
-                       v-on:dialog-auth-wallet-notify="tapAuthWalletNotify"></DialogAuthWallet>
-                     -->
+          <!-- 受け取る -->
+          <DialogWalletAccount
+                       v-bind:dialogVal="isShowAccount"
+                       v-bind:walletItem="walletItem"
+                       v-bind:nemBalance="nemBalance"
+                       v-bind:festBalance="festBalance"
+                       v-on:dialog-wallet-account-close="tapWalletAccountClose"></DialogWalletAccount>
+                     
         </v-card>
       </v-layout>
      </v-flex>
@@ -42,7 +41,7 @@
 <script>
   import dbWrapper from '@/js/local_database_wrapper'
   import nemWrapper from '@/js/nem_wrapper'
-  import DialogAuthWallet from '@/components/DialogAuthWallet'
+  import DialogWalletAccount from '@/components/DialogWalletAccount'
   import { mapGetters, mapActions } from 'vuex'
 
   export default {
@@ -55,11 +54,11 @@
       festBalance: 0,
       mosaics: [],
       createBtnName: 'ダッシュボード',
-      isShowAuthWallet: false,
+      isShowAccount: false,
       description: '本人確認できていません。<br>TOPページで認証してください。'
     }),
     components: {
-      DialogAuthWallet
+      DialogWalletAccount
     },
     computed: {
       ...mapGetters('Auth', ['isAuth', 'authPassword'])
@@ -84,7 +83,6 @@
             this.walletItem = result
             this.address = result.account.address.value
             this.pairKey = nemWrapper.getPairKey(result.account, this.authPassword)
-            // this.qrValue = nemWrapper.getJSONInvoiceForQRcode(2, 1, this.name, this.address, 0, this.description)
             // 残高取得.
             nemWrapper.getAccountFromPublicKey(this.pairKey.publicKey)
               .then((result) => {
@@ -116,6 +114,7 @@
           })
       },
       tapShowAccount () {
+        this.isShowAccount = true
       },
       tapSend () {
       },
@@ -127,14 +126,8 @@
       },
       tapWalletReset () {
       },
-      tapAuthWalletClose (status) {
-        this.isShowAuthWallet = false
-      },
-      tapAuthWalletNotify (status) {
-        console.log(status)
-        if (status === 'created' || status === 'auth_success') {
-          console.log('go to next page')
-        }
+      tapWalletAccountClose (status) {
+        this.isShowAccount = false
       }
     }
   }
