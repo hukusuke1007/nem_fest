@@ -7,22 +7,12 @@ import VueLocalForage from 'vue-localforage'
 import Vuetify from 'vuetify'
 import colors from 'vuetify/es5/util/colors'
 import VueQriously from 'vue-qriously'
-import Toasted from 'vue-toasted'
+import 'vue2-toast/lib/toast.css'
+import Toast from 'vue2-toast'
+// import Toasted from 'vue-toasted'
 // Page
 import TopPage from '@/pages/TopPage'
 import Dashboard from '@/pages/Dashboard'
-/*
-import Create from '@/pages/Create'
-import WalletCreate from '@/pages/create_wallet/WalletCreate'
-import WalletImport from '@/pages/create_wallet/WalletImport'
-import WalletTransfer from '@/pages/WalletTransfer'
-import WalletList from '@/pages/WalletList'
-import WalletDetail from '@/pages/WalletDetail'
-import InvoiceList from '@/pages/InvoiceList'
-import InvoiceCreate from '@/pages/InvoiceCreate'
-import InvoiceShow from '@/pages/InvoiceShow'
-import Setting from '@/pages/Setting'
-*/
 
 Vue.use(Router)
 Vue.use(Vuetify, {
@@ -36,7 +26,12 @@ Vue.use(Vuetify, {
 Vue.use(VueQrcodeReader)
 Vue.use(VueLocalForage)
 Vue.use(VueQriously)
-Vue.use(Toasted)
+Vue.use(Toast, {
+  defaultType: 'bottom',
+  duration: 2000,
+  wordWrap: true,
+  width: '200px'
+})
 
 export default new Router({
   routes: [

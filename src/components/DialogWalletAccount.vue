@@ -111,13 +111,16 @@
       },
       showToast () {
         let toastMsg = 'コピーしました。'
+        this.$toast(toastMsg)
+        /*
         this.$toasted.show(toastMsg, {
           theme: 'outline',
-          position: 'top-center',
+          position: 'bottom-center',
           icon: 'assignment',
           fitToScreen: true,
           duration: 2000
         })
+        */
       },
       close () {
         this.$emit('dialog-wallet-account-close', 'close')

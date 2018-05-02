@@ -34,6 +34,13 @@
                  v-bind:nemBalance="nemBalance"
                  v-bind:festBalance="festBalance"
                  v-on:dialog-wallet-account-close="tapWalletAccountClose"></DialogWalletAccount>
+    <!-- QRコードから送る -->
+    <DialogQRreader
+                 v-bind:dialogVal="isShowQRreader"
+                 v-bind:nemBalance="nemBalance"
+                 v-bind:festBalance="festBalance"
+                 v-on:dialog-qr-reader-scan="getQRContent"
+                 v-on:dialog-qr-reader-close="tapQRreaderClose"></DialogQRreader>
   </v-container>
 </template>
 
@@ -41,6 +48,7 @@
   import dbWrapper from '@/js/local_database_wrapper'
   import nemWrapper from '@/js/nem_wrapper'
   import DialogWalletAccount from '@/components/DialogWalletAccount'
+  import DialogQRreader from '@/components/DialogQRreader'
   import { mapGetters, mapActions } from 'vuex'
 
   export default {
@@ -54,10 +62,12 @@
       mosaics: [],
       createBtnName: 'ダッシュボード',
       isShowAccount: false,
+      isShowQRreader: false,
       description: '本人確認できていません。<br>TOPページで認証してください。'
     }),
     components: {
-      DialogWalletAccount
+      DialogWalletAccount,
+      DialogQRreader
     },
     computed: {
       ...mapGetters('Auth', ['isAuth', 'authPassword'])
@@ -112,12 +122,30 @@
             console.error(err)
           })
       },
+      getQRContent (content) {
+        console.log(content)
+        if ((content !== null) && ('data' in content)) {
+          console.log(content)
+          /*
+          this.name = content.data.name
+          this.senderAddr = content.data.addr
+          if ('amount' in content.data) {
+            this.amount = Number(content.data.amount) / Math.pow(10, 6)
+          } else {
+            this.amount = 0
+          }
+          this.message = content.data.msg
+          */
+          this.isShowQRreader = false
+        }
+      },
       tapShowAccount () {
         this.isShowAccount = true
       },
       tapSend () {
       },
       tapSendQRcode () {
+        this.isShowQRreader = true
       },
       tapShowHistory () {
       },
@@ -127,6 +155,9 @@
       },
       tapWalletAccountClose (status) {
         this.isShowAccount = false
+      },
+      tapQRreaderClose (status) {
+        this.isShowQRreader = false
       }
     }
   }
