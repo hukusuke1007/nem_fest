@@ -13,18 +13,18 @@
       <v-btn icon class="hidden-xs-only primary--text" @click="back">
         <v-icon>arrow_back</v-icon>
       </v-btn>
-       <v-toolbar-title class="black--text">NEM fest</v-toolbar-title>
+       <v-toolbar-title class="black--text">{{ title }}</v-toolbar-title>
        <v-spacer></v-spacer>
      </v-toolbar>
      <v-content>
 
       <!-- 真ん中のView -->
       <!-- <v-container fluid fill-height> -->
-      <v-container fluid>
+      <!-- <v-container fluid> -->
         <v-fade-transition mode="out-in">
           <router-view></router-view>
         </v-fade-transition>
-     </v-container>
+     <!-- </v-container> -->
       <!-- </v-container> -->
      </v-content>
   </v-app>
@@ -32,18 +32,18 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'app',
-  data () {
-    return {
-      naviBar: false
-    }
+  data: () => ({
+    naviBar: false
+  }),
+  computed: {
+    ...mapGetters('Top', ['title'])
   },
-  mounted: function () {
-
+  mounted: () => {
   },
-  destroyed: function () {
-
+  destroyed: () => {
   },
   methods: {
     back () {

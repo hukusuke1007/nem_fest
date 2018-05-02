@@ -9,6 +9,27 @@ action ・・・mutationを呼び出す
 */
 Vue.use(Vuex)
 
+const Top = {
+  namespaced: true,
+  state: {
+    title: 'NEM fest'
+  },
+  getters: {
+    title: state => state.title
+  },
+  mutations: {
+    setTitle (state, value) {
+      console.log('setTitle' + value)
+      state.title = value
+    }
+  },
+  actions: {
+    doTitle ({ commit, getters }, value) {
+      commit('setTitle', value)
+    }
+  }
+}
+
 const Auth = {
   namespaced: true,
   state: {
@@ -41,6 +62,7 @@ const Auth = {
 
 export default new Vuex.Store({
   modules: {
+    Top,
     Auth
   }
 })

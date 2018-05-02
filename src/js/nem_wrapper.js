@@ -156,11 +156,16 @@ exports.getMessageFromPlain = (hex) => {
 
 // 公開鍵と秘密鍵を取得.
 exports.getPairKey = (account) => {
+  return this.getPairKey(account, PASSWORD)
+}
+
+// 公開鍵と秘密鍵を取得.
+exports.getPairKey = (account, pass) => {
   const address = new Address(account.address.value)
   const encryptedPrivateKey = new EncryptedPrivateKey(account.encryptedPrivateKey.encryptedKey, account.encryptedPrivateKey.iv)
   const simpleWallet = new SimpleWallet(account.name, account.network, address, account.creationDate, encryptedPrivateKey)
 
-  const password = new Password(PASSWORD)
+  const password = new Password(pass)
   const wallet = simpleWallet.open(password)
   // console.log(wallet)
   let pairKey = {}

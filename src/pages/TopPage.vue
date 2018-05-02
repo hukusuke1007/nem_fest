@@ -7,7 +7,7 @@
       <v-flex xs12 sm6 offset-sm3>
        <v-layout column wrap>
         <v-card>
-          <v-flex v-if="!isExistWallet">
+          <v-flex>
             <div style="text-align: center;">
               <h1>ようこそ！</h1>
             </div>
@@ -16,9 +16,6 @@
               <v-btn large block @click="tapCreate">{{ createBtnName }}</v-btn>
             </div>
             <br>
-          </v-flex>
-          <v-flex v-else>
-            ウォレットあったよ〜
           </v-flex>
 
           <DialogAuthWallet v-bind:dialogVal="isShowAuthWallet"
@@ -34,27 +31,43 @@
 <script>
   import dbWrapper from '@/js/local_database_wrapper'
   import DialogAuthWallet from '@/components/DialogAuthWallet'
+  import { mapGetters, mapActions } from 'vuex'
   export default {
     name: 'topPage',
     data: () => ({
       createBtnName: 'ウォレットを作成する',
-      isExistWallet: false,
       isShowAuthWallet: false,
       description: 'このウォレットの説明文が入ります<br>ユキちゃんへ相談<br>・送受金している最中と完了したときのUIについて<br>・送受金履歴どうしようか<br>・送金画面はプッシュかモーダルか'
     }),
     components: {
       DialogAuthWallet
     },
+    computed: {
+      ...mapGetters('Auth', ['isAuth', 'authPassword'])
+    },
     mounted () {
-      this.getWallet()
+      this.doTitle('ウォレットの作成')
+
+      // デバック用
+      /*
+      this.doAuth(true)
+      this.doAuthPassword('aaaaaaaa')
+      this.goNextPage()
+      */
+      if (this.isAuth === true) {
+        this.goNextPage()
+      } else {
+        this.getWallet()
+      }
     },
     methods: {
+      ...mapActions('Top', ['doTitle']),
+      // ...mapActions('Auth', ['doAuth', 'doAuthPassword']),
       getWallet () {
         dbWrapper.getItem(dbWrapper.KEY_WALLET_INFO)
           .then((result) => {
             if (result) {
               this.createBtnName = 'パスワードを入力する'
-              // this.isExistWallet = true
               this.isShowAuthWallet = true
             } else {
               this.createBtnName = 'ウォレットを作成する'
@@ -62,6 +75,10 @@
           }).catch((err) => {
             console.error(err)
           })
+      },
+      goNextPage () {
+        console.log('go to next page mounted')
+        this.$router.push({name: 'Dashboard'})
       },
       tapCreate () {
         this.isShowAuthWallet = true
@@ -72,8 +89,7 @@
       tapAuthWalletNotify (status) {
         console.log(status)
         if (status === 'created' || status === 'auth_success') {
-          console.log('go to next page')
-          this.isExistWallet = true
+          this.goNextPage()
         }
       }
     }

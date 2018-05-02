@@ -4,12 +4,13 @@ import Router from 'vue-router'
 // Library
 import VueQrcodeReader from 'vue-qrcode-reader'
 import VueLocalForage from 'vue-localforage'
-// import LocalForage from 'localforage'
 import Vuetify from 'vuetify'
 import colors from 'vuetify/es5/util/colors'
 import VueQriously from 'vue-qriously'
-// CreatePage
+// Page
 import TopPage from '@/pages/TopPage'
+import Dashboard from '@/pages/Dashboard'
+/*
 import Create from '@/pages/Create'
 import WalletCreate from '@/pages/create_wallet/WalletCreate'
 import WalletImport from '@/pages/create_wallet/WalletImport'
@@ -20,6 +21,7 @@ import InvoiceList from '@/pages/InvoiceList'
 import InvoiceCreate from '@/pages/InvoiceCreate'
 import InvoiceShow from '@/pages/InvoiceShow'
 import Setting from '@/pages/Setting'
+*/
 
 Vue.use(Router)
 Vue.use(Vuetify, {
@@ -42,57 +44,9 @@ export default new Router({
       component: TopPage
     },
     {
-      path: '/create',
-      name: 'Create',
-      component: Create
-    },
-    {
-      path: '/wallet_create',
-      name: 'WalletCreate',
-      component: WalletCreate
-    },
-    {
-      path: '/wallet_import',
-      name: 'WalletImport',
-      component: WalletImport
-    },
-    {
-      path: '/walletTransfer',
-      name: 'WalletTransfer',
-      component: WalletTransfer
-    },
-    {
-      path: '/walletlist',
-      name: 'WalletList',
-      component: WalletList
-    },
-    {
-      path: '/walletDetail/:id',
-      name: 'WalletDetail',
-      component: WalletDetail,
-      props: true
-    },
-    {
-      path: '/invoiceList',
-      name: 'InvoiceList',
-      component: InvoiceList
-    },
-    {
-      path: '/invoiceCreate',
-      name: 'InvoiceCreate',
-      component: InvoiceCreate,
-      props: true
-    },
-    {
-      path: '/invoiceShow',
-      name: 'InvoiceShow',
-      component: InvoiceShow,
-      props: true
-    },
-    {
-      path: '/setting',
-      name: 'Setting',
-      component: Setting
+      path: '/dashboard',
+      name: 'Dashboard',
+      component: Dashboard
     }
   ]
 })
