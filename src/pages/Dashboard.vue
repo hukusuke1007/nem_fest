@@ -5,8 +5,8 @@
     grid-list-lg>
     <div class="w-break sideOffset">
       <v-flex xs12 sm6 offset-sm3>
+      <v-card>
        <v-layout column wrap>
-        <v-card>
           <v-flex v-if="isAuth">
             <div style="text-align: center;">xem<font size="5" style="margin-left: 8px;">{{ nemBalance }}</font></div>
             <div style="text-align: center;">fest<font size="5" style="margin-left: 8px;">{{ festBalance }}</font></div>
@@ -21,20 +21,19 @@
           </v-flex>
           <v-flex v-else>
             <v-card-text><div v-html="description" style="text-align: left;"></div></v-card-text>
-          </v-flex>
-
-          <!-- 受け取る -->
-          <DialogWalletAccount
-                       v-bind:dialogVal="isShowAccount"
-                       v-bind:walletItem="walletItem"
-                       v-bind:nemBalance="nemBalance"
-                       v-bind:festBalance="festBalance"
-                       v-on:dialog-wallet-account-close="tapWalletAccountClose"></DialogWalletAccount>
-                     
-        </v-card>
+          </v-flex>               
+        
       </v-layout>
+      </v-card>
      </v-flex>
     </div>
+    <!-- 受け取る -->
+    <DialogWalletAccount
+                 v-bind:dialogVal="isShowAccount"
+                 v-bind:walletItem="walletItem"
+                 v-bind:nemBalance="nemBalance"
+                 v-bind:festBalance="festBalance"
+                 v-on:dialog-wallet-account-close="tapWalletAccountClose"></DialogWalletAccount>
   </v-container>
 </template>
 

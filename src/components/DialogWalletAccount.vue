@@ -99,6 +99,7 @@
       },
       tapCopy () {
         this.copyText(this.address)
+        this.showToast()
       },
       copyText (text) {
         let ta = document.createElement('textarea')
@@ -107,6 +108,15 @@
         ta.select()
         document.execCommand('copy')
         ta.parentElement.removeChild(ta)
+      },
+      showToast () {
+        let toastMsg = 'アドレスをコピーしました。'
+        this.$toasted.show(toastMsg, {
+          theme: 'outline',
+          position: 'bottom-center',
+          icon: 'assignment',
+          duration: 2000
+        })
       },
       close () {
         this.$emit('dialog-wallet-account-close', 'close')

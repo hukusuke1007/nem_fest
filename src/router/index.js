@@ -7,6 +7,7 @@ import VueLocalForage from 'vue-localforage'
 import Vuetify from 'vuetify'
 import colors from 'vuetify/es5/util/colors'
 import VueQriously from 'vue-qriously'
+import Toasted from 'vue-toasted'
 // Page
 import TopPage from '@/pages/TopPage'
 import Dashboard from '@/pages/Dashboard'
@@ -35,6 +36,7 @@ Vue.use(Vuetify, {
 Vue.use(VueQrcodeReader)
 Vue.use(VueLocalForage)
 Vue.use(VueQriously)
+Vue.use(Toasted)
 
 export default new Router({
   routes: [
