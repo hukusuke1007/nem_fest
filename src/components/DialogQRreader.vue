@@ -7,10 +7,11 @@
   >
   <v-card flat>
       <v-toolbar card color="blue-grey lighten-5" dark>
-        <v-btn icon @click.native="close()" dark>
-          <v-icon color="primary">arrow_back</v-icon>
-        </v-btn>
         <v-toolbar-title class="black--text">QRコードを読み込む</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn icon @click.native="close()" dark>
+          <v-icon color="primary">close</v-icon>
+        </v-btn>
       </v-toolbar>
       <v-container
         fluid
