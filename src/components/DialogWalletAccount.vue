@@ -110,11 +110,12 @@
         ta.parentElement.removeChild(ta)
       },
       showToast () {
-        let toastMsg = 'アドレスをコピーしました。'
+        let toastMsg = 'コピーしました。'
         this.$toasted.show(toastMsg, {
           theme: 'outline',
           position: 'bottom-center',
           icon: 'assignment',
+          fullWidth: true,
           duration: 2000
         })
       },
@@ -130,5 +131,8 @@
 .btnLarge {
   font-color: white;
   height: 60px;
+}
+.toast {
+  text-align: center;
 }
 </style>
