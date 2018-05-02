@@ -13,7 +13,7 @@
             <v-flex>
               <v-btn color="primary" class="btnLarge" large block @click="tapShowAccount">受け取る</v-btn>
               <v-btn color="primary" class="btnMedium" large @click="tapSend">送金する</v-btn>
-              <v-btn color="primary" class="btnMedium" large @click="tapSendQRcode">QRコード<br>から送る</v-btn>
+              <v-btn color="primary" class="btnMedium" large @click="tapSendQRcode">QRコードから<br>送る</v-btn>
               <v-btn color="grey lighten-4" class="btnLarge" large block @click="tapShowHistory">履歴を見る</v-btn>
               <v-btn color="grey lighten-4" class="black--text" large @click="tapShowPrivateKey">秘密鍵を表示する</v-btn>
               <v-btn flat large block @click="tapWalletReset">ウォレットをリセットする</v-btn>
@@ -141,8 +141,8 @@
 
 .btnMedium {
   font-color: white;
-  width: 100px;
-  height: 100px;
+  width: 102px;
+  height: 102px;
 }
 
 
