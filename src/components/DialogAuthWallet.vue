@@ -23,7 +23,7 @@
                       v-model="password"
                       :rules="[rules.passwordLimit, rules.passwordInput]"
                       min="8"
-                      :append-icon="hiddenPass ? 'visibility' : 'visibility_off'"
+                      :append-icon ="hiddenPass ? 'visibility' : 'visibility_off'"
                       :append-icon-cb="() => (hiddenPass = !hiddenPass)"
                       :type="hiddenPass ? 'password' : 'text'"
                       required
@@ -84,6 +84,7 @@
   import nemWrapper from '@/js/nem_wrapper'
   import ModelWalletNem from '@/js/model/model_wallet_nem'
   import cryptoWrapper from '@/js/crypto_wrapper'
+  import { mapGetters, mapActions } from 'vuex'
 
   export default {
     data: () => ({
@@ -109,6 +110,9 @@
     components: {
       DialogConfirm
     },
+    computed: {
+      ...mapGetters('Auth', ['isAuth', 'authPassword'])
+    },
     mounted () {
       this.reloadItem()
     },
@@ -124,6 +128,11 @@
       }
     },
     methods: {
+      ...mapActions('Auth', ['doAuth', 'doAuthPassword']),
+      setStateStore (isAuth, password) {
+        this.doAuth(isAuth)
+        this.doAuthPassword(password)
+      },
       reloadItem () {
         dbWrapper.getItem(dbWrapper.KEY_AUTH_PASSWORD)
           .then((result) => {
@@ -149,6 +158,7 @@
               .then((result) => {
                 console.log(result)
                 this.isError = false
+                this.setStateStore(true, this.password)
                 this.dialogMessage = 'ウォレットを作成しました。'
                 this.isShowDialogConfirm = true
               }).catch((err) => {
@@ -171,6 +181,7 @@
             console.log(decPass)
             if (this.password === decPass) {
               this.isError = false
+              this.setStateStore(true, this.password)
               this.$emit('dialog-auth-wallet-notify', 'auth_success')
               this.$emit('dialog-auth-wallet-close', 'close')
             } else {
