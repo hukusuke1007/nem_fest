@@ -34,6 +34,27 @@
                  v-bind:nemBalance="nemBalance"
                  v-bind:festBalance="festBalance"
                  v-on:dialog-wallet-account-close="tapWalletAccountClose"></DialogWalletAccount>
+
+    <!-- 送金する(選択) -->
+    <DialogSelectTransfer
+                 v-bind:dialogVal="isSelectTrans"
+                 v-bind:nemBalance="nemBalance"
+                 v-bind:festBalance="festBalance"
+                 v-on:dialog-select-transfer-select="tapSelectTransSelect"
+                 v-on:dialog-select-transfer-close="tapSelectTransClose"></DialogSelectTransfer>
+
+    <!-- 実際に送金する画面 -->
+    <DialogTransferTransaction
+                 v-bind:dialogVal="isShowTransfer"
+                 v-bind:transactionType="transactionType"
+                 v-bind:nemBalance="nemBalance"
+                 v-bind:festBalance="festBalance"
+                 v-bind:pairKey="pairKey"
+                 v-bind:senderItem="senderItem"
+                 v-bind:mosaics="mosaics"
+                 v-on:dialog-transfer-transaction-sended="tapTransferSended"
+                 v-on:dialog-transfer-transaction-close="tapTransferClose"></DialogTransferTransaction>
+
     <!-- QRコードから送る -->
     <DialogQRreader
                  v-bind:dialogVal="isShowQRreader"
@@ -67,6 +88,8 @@
   import dbWrapper from '@/js/local_database_wrapper'
   import nemWrapper from '@/js/nem_wrapper'
   import DialogWalletAccount from '@/components/DialogWalletAccount'
+  import DialogSelectTransfer from '@/components/DialogSelectTransfer'
+  import DialogTransferTransaction from '@/components/DialogTransferTransaction'
   import DialogQRreader from '@/components/DialogQRreader'
   import DialogAuthWallet from '@/components/DialogAuthWallet'
   import DialogConfirm from '@/components/DialogConfirm'
@@ -82,8 +105,16 @@
       nemBalance: 0,
       festBalance: 0,
       mosaics: [],
+      senderItem: {
+        address: '',
+        amount: 0,
+        message: ''
+      },
       selectBtn: '',
+      transactionType: '',
       isShowAccount: false,
+      isSelectTrans: false,
+      isShowTransfer: false,
       isShowQRreader: false,
       isShowAuthWallet: false,
       isShowDialog: false,
@@ -98,6 +129,8 @@
     }),
     components: {
       DialogWalletAccount,
+      DialogSelectTransfer,
+      DialogTransferTransaction,
       DialogQRreader,
       DialogAuthWallet,
       DialogConfirm,
@@ -160,17 +193,16 @@
         console.log(content)
         if ((content !== null) && ('data' in content)) {
           console.log(content)
-          /*
-          this.name = content.data.name
-          this.senderAddr = content.data.addr
+          // this.name = content.data.name
+          this.senderItem.address = content.data.addr
           if ('amount' in content.data) {
-            this.amount = Number(content.data.amount) / Math.pow(10, 6)
+            this.senderItem.amount = Number(content.data.amount) / Math.pow(10, 6)
           } else {
-            this.amount = 0
+            this.senderItem.amount = 0
           }
-          this.message = content.data.msg
-          */
+          this.senderItem.message = content.data.msg
           this.isShowQRreader = false
+          this.isShowTransfer = true
         }
       },
       resetWallet () {
@@ -199,6 +231,7 @@
         this.isShowAccount = true
       },
       tapSend () {
+        this.isSelectTrans = true
       },
       tapSendQRcode () {
         this.isShowQRreader = true
@@ -215,6 +248,21 @@
       },
       tapWalletAccountClose (status) {
         this.isShowAccount = false
+      },
+      tapSelectTransSelect (select) {
+        console.log(select)
+        this.transactionType = select
+        this.isShowTransfer = true
+      },
+      tapTransferSended (status, message) {
+        this.isShowTransfer = false
+        this.$toast(message)
+      },
+      tapTransferClose (status) {
+        this.isShowTransfer = false
+      },
+      tapSelectTransClose (status) {
+        this.isSelectTrans = false
       },
       tapQRreaderClose (status) {
         this.isShowQRreader = false
@@ -261,6 +309,7 @@
 }
 
 .btnMedium {
+  font-size: 1.0em;
   font-color: white;
   width: 102px;
   height: 102px;
