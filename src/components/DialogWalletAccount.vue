@@ -98,8 +98,8 @@
         }
       },
       tapCopy () {
-        this.copyText(this.address)
         this.showToast()
+        this.copyText(this.address)
       },
       copyText (text) {
         let ta = document.createElement('textarea')
@@ -110,7 +110,7 @@
         ta.parentElement.removeChild(ta)
       },
       showToast () {
-        let toastMsg = 'コピーしました。'
+        let toastMsg = 'コピーしました'
         this.$toast(toastMsg)
         /*
         this.$toasted.show(toastMsg, {
