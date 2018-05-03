@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.0.1/workbox-sw.js");
 
 importScripts(
-  "./precache-manifest.7eaaf976c2af84fda7b898708f0c6fff.js"
+  "./precache-manifest.afe858df21eacc850c0587ce9bb3b55b.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "nem_fest"});
@@ -399,6 +399,10 @@ self.__precacheManifest = [
   {
     "url": "precache-manifest.7d3d57bcf6394aeceec65f8949cd5b13.js",
     "revision": "7d3d57bcf6394aeceec65f8949cd5b13"
+  },
+  {
+    "url": "precache-manifest.7eaaf976c2af84fda7b898708f0c6fff.js",
+    "revision": "7eaaf976c2af84fda7b898708f0c6fff"
   },
   {
     "url": "precache-manifest.7f580945559253e189ead11144fe54c6.js",
@@ -806,7 +810,7 @@ self.__precacheManifest = [
   },
   {
     "url": "service-worker.js",
-    "revision": "3381369a4d4e5621aa39271bf82c5441"
+    "revision": "e3cbc6f2050aa0f5044e783af11dcb41"
   }
 ].concat(self.__precacheManifest || []);
 workbox.precaching.suppressWarnings();

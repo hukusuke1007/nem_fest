@@ -53,41 +53,24 @@
       dialog: false
     }),
     computed: {
-      ...mapGetters('Auth', ['isAuth', 'authPassword'])
+      ...mapGetters('Auth', ['isAuth', 'authPassword']),
+      ...mapGetters('Nem', ['nemBalance', 'festBalance'])
     },
     mounted () {
-      this.reloadItem()
     },
     props: {
       dialogVal: {
         type: Boolean,
         default: false
-      },
-      walletItem: {
-        type: Object,
-        default: null
-      },
-      nemBalance: {
-        type: Number,
-        default: 0
-      },
-      festBalance: {
-        type: Number,
-        default: 0
       }
     },
     watch: {
       dialogVal (val) {
         this.dialog = val
-      },
-      walletItem (val) {
-        this.reloadItem()
       }
     },
     methods: {
       ...mapActions('Auth', ['doAuth', 'doAuthPassword']),
-      reloadItem () {
-      },
       tapSendNem () {
         this.$emit('dialog-select-transfer-select', 'nem')
       },

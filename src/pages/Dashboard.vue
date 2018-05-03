@@ -30,16 +30,11 @@
     <!-- 受け取る -->
     <DialogWalletAccount
                  v-bind:dialogVal="isShowAccount"
-                 v-bind:walletItem="walletItem"
-                 v-bind:nemBalance="nemBalance"
-                 v-bind:festBalance="festBalance"
                  v-on:dialog-wallet-account-close="tapWalletAccountClose"></DialogWalletAccount>
 
     <!-- 送金する(選択) -->
     <DialogSelectTransfer
                  v-bind:dialogVal="isSelectTrans"
-                 v-bind:nemBalance="nemBalance"
-                 v-bind:festBalance="festBalance"
                  v-on:dialog-select-transfer-select="tapSelectTransSelect"
                  v-on:dialog-select-transfer-close="tapSelectTransClose"></DialogSelectTransfer>
 
@@ -47,19 +42,13 @@
     <DialogTransferTransaction
                  v-bind:dialogVal="isShowTransfer"
                  v-bind:transactionType="transactionType"
-                 v-bind:nemBalance="nemBalance"
-                 v-bind:festBalance="festBalance"
-                 v-bind:pairKey="pairKey"
                  v-bind:senderItem="senderItem"
-                 v-bind:mosaics="mosaics"
                  v-on:dialog-transfer-transaction-sended="tapTransferSended"
                  v-on:dialog-transfer-transaction-close="tapTransferClose"></DialogTransferTransaction>
 
     <!-- QRコードから送る -->
     <DialogQRreader
                  v-bind:dialogVal="isShowQRreader"
-                 v-bind:nemBalance="nemBalance"
-                 v-bind:festBalance="festBalance"
                  v-on:dialog-qr-reader-scan="getQRContent"
                  v-on:dialog-qr-reader-close="tapQRreaderClose"></DialogQRreader>
 
@@ -99,12 +88,6 @@
   export default {
     name: 'dashboard',
     data: () => ({
-      walletItem: null,
-      address: '',
-      pairKey: {},
-      nemBalance: 0,
-      festBalance: 0,
-      mosaics: [],
       senderItem: {
         address: '',
         amount: 0,
@@ -137,7 +120,18 @@
       DialogPositiveNegative
     },
     computed: {
-      ...mapGetters('Auth', ['isAuth', 'authPassword'])
+      ...mapGetters('Auth', ['isAuth', 'authPassword']),
+      ...mapGetters('Nem', ['walletItem', 'address', 'pairKey', 'nemBalance', 'festBalance', 'mosaics'])
+      /*
+      ...mapGetters('Nem', {
+        stWalletItem: 'walletItem',
+        stAddress: 'address',
+        stPairKey: 'pairKey',
+        stNemBalance: 'nemBalance',
+        stFestBalance: 'festBalance',
+        stMosaics: 'mosaics'
+      })
+      */
     },
     mounted () {
       // デバックのため認証状態にする
@@ -153,38 +147,15 @@
     methods: {
       ...mapActions('Top', ['doTitle']),
       ...mapActions('Auth', ['doAuth', 'doAuthPassword']),
+      ...mapActions('Nem', ['doUpdateNemBalance', 'doUpdateMosaicsBalance', 'doWalletItem', 'doAddress', 'doPairKey']),
       getWallet () {
         dbWrapper.getItem(dbWrapper.KEY_WALLET_INFO)
           .then((result) => {
-            this.walletItem = result
-            this.address = result.account.address.value
-            this.pairKey = nemWrapper.getPairKey(result.account, this.authPassword)
-            // 残高取得.
-            nemWrapper.getAccountFromPublicKey(this.pairKey.publicKey)
-              .then((result) => {
-                this.nemBalance = result.balance.balance / nemWrapper.NEM_UNIT
-              }).catch((err) => {
-                console.log(err)
-              })
-            // モザイク取得.
-            nemWrapper.getMosaics(this.address)
-              .then((result) => {
-                console.log(result)
-                result.forEach((element) => {
-                  let mosaic = {}
-                  mosaic.text = element.mosaicId.namespaceId + ':' + element.mosaicId.name
-                  mosaic.namespaceId = element.mosaicId.namespaceId
-                  mosaic.name = element.mosaicId.name
-                  mosaic.amount = element.amount
-                  mosaic.divisibility = element.properties.divisibility
-                  mosaic.initialSupply = element.properties.initialSupply
-                  mosaic.supplyMutable = element.properties.supplyMutable
-                  mosaic.transferable = element.properties.transferable
-                  this.mosaics.push(mosaic)
-                })
-              }).catch((err) => {
-                console.log('get_mosaic_error: ' + err)
-              })
+            this.doWalletItem(result)
+            this.doAddress(result.account.address.value)
+            this.doPairKey(nemWrapper.getPairKey(result.account, this.authPassword))
+            this.doUpdateNemBalance()
+            this.doUpdateMosaicsBalance()
           }).catch((err) => {
             console.error(err)
           })

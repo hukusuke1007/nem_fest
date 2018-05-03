@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import Nem from '@/store/nem_store'
 // import router from './router'
 /*
 getter ・・・テンプレートへ値を返します
@@ -63,6 +64,7 @@ const Auth = {
 export default new Vuex.Store({
   modules: {
     Top,
-    Auth
+    Auth,
+    Nem
   }
 })

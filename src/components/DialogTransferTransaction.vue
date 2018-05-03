@@ -30,52 +30,54 @@
                 <span style="margin-left: 4px;">{{ festBalance }}</span>
               </v-card-text>
             </v-card>
-            <v-form v-model="valid" ref="form" lazy-validation>
-              <v-layout row>
-                <v-flex xs4>
-                  <v-subheader>送信先</v-subheader>
-                </v-flex>
-                <v-flex xs8>
-                  <v-text-field
-                    label="送信先を入力"
-                    v-model="senderItem.address"
-                    :rules="[rules.senderAddrLimit, rules.senderAddrInput]"
-                    required
-                    placeholder="例. XXXX-XXXX-XXXX-XXXX-XXXXXXXXXX"
-                  ></v-text-field>
-                </v-flex>
-              </v-layout>
-              <v-layout row>
-                <v-flex xs4>
-                  <v-subheader>数量</v-subheader>
-                </v-flex>
-                <v-flex xs8>
-                  <v-text-field
-                    label="数量を入力"
-                    v-model="senderItem.amount"
-                    :rules="[rules.amountLimit, rules.amountInput]"
-                    required
-                    placeholder=""
-                  ></v-text-field>
-                </v-flex>
-              </v-layout>
-              <v-layout row>
-                <!--
-                <v-flex xs4>
-                  <v-subheader>メッセージ</v-subheader>
-                </v-flex>
-                -->
-                <v-flex xs12>
-                  <v-text-field
-                    label="メッセージ"
-                    v-model="senderItem.message"
-                    :rules="[rules.messageRules]"
-                    :counter="1024"
-                    placeholder="メッセージを入力"
-                  ></v-text-field>
-                </v-flex>
-              </v-layout>
-            </v-form>
+            <v-flex>
+              <v-form v-model="valid" ref="form" lazy-validation>
+                <v-layout row>
+                  <v-flex xs4>
+                    <v-subheader>送信先</v-subheader>
+                  </v-flex>
+                  <v-flex xs8>
+                    <v-text-field
+                      label="送信先を入力"
+                      v-model="senderItem.address"
+                      :rules="[rules.senderAddrLimit, rules.senderAddrInput]"
+                      required
+                      placeholder="例. XXXX-XXXX-XXXX-XXXX-XXXXXXXXXX"
+                    ></v-text-field>
+                  </v-flex>
+                </v-layout>
+                <v-layout row>
+                  <v-flex xs4>
+                    <v-subheader>数量</v-subheader>
+                  </v-flex>
+                  <v-flex xs8>
+                    <v-text-field
+                      label="数量を入力"
+                      v-model="senderItem.amount"
+                      :rules="[rules.amountLimit, rules.amountInput]"
+                      required
+                      placeholder=""
+                    ></v-text-field>
+                  </v-flex>
+                </v-layout>
+                <v-layout row>
+                  <!--
+                  <v-flex xs4>
+                    <v-subheader>メッセージ</v-subheader>
+                  </v-flex>
+                  -->
+                  <v-flex xs12>
+                    <v-text-field
+                      label="メッセージ"
+                      v-model="senderItem.message"
+                      :rules="[rules.messageRules]"
+                      :counter="1024"
+                      placeholder="メッセージを入力"
+                    ></v-text-field>
+                  </v-flex>
+                </v-layout>
+              </v-form>
+            </v-flex>
             <v-card>
               <v-card-title>
               <div style="margin: 2px, 10px, 2px, 0px; text-align: left;">
@@ -142,7 +144,8 @@
       }
     }),
     computed: {
-      ...mapGetters('Auth', ['isAuth', 'authPassword'])
+      ...mapGetters('Auth', ['isAuth', 'authPassword']),
+      ...mapGetters('Nem', ['pairKey', 'nemBalance', 'festBalance', 'mosaics'])
     },
     components: {
       DialogPositiveNegative,
@@ -155,29 +158,13 @@
         type: Boolean,
         default: false
       },
-      nemBalance: {
-        type: Number,
-        default: 0
-      },
-      festBalance: {
-        type: Number,
-        default: 0
-      },
       transactionType: {
         type: String,
         default: 'nem'
       },
-      pairKey: {
-        type: Object,
-        default: {}
-      },
       senderItem: {
         type: Object,
         default: {}
-      },
-      mosaics: {
-        type: Array,
-        default: []
       }
     },
     watch: {
@@ -317,6 +304,7 @@
         this.senderItem.address = ''
         this.senderItem.amount = 0
         this.senderItem.message = ''
+        this.fee = 0
       },
       sended (stauts, message) {
         this.clear()

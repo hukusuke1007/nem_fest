@@ -54,11 +54,12 @@
   export default {
     data: () => ({
       dialog: false,
-      address: '',
+      // address: '',
       qrValue: ''
     }),
     computed: {
-      ...mapGetters('Auth', ['isAuth', 'authPassword'])
+      ...mapGetters('Auth', ['isAuth', 'authPassword']),
+      ...mapGetters('Nem', ['address', 'pairKey', 'nemBalance', 'festBalance'])
     },
     mounted () {
       this.reloadItem()
@@ -67,35 +68,18 @@
       dialogVal: {
         type: Boolean,
         default: false
-      },
-      walletItem: {
-        type: Object,
-        default: null
-      },
-      nemBalance: {
-        type: Number,
-        default: 0
-      },
-      festBalance: {
-        type: Number,
-        default: 0
       }
     },
     watch: {
       dialogVal (val) {
         this.dialog = val
-      },
-      walletItem (val) {
         this.reloadItem()
       }
     },
     methods: {
       ...mapActions('Auth', ['doAuth', 'doAuthPassword']),
       reloadItem () {
-        if (this.walletItem !== null) {
-          this.address = this.walletItem.account.address.value
-          this.qrValue = nemWrapper.getJSONInvoiceForQRcode(2, 1, 'nem_fest', this.address, 0, '')
-        }
+        this.qrValue = nemWrapper.getJSONInvoiceForQRcode(2, 1, 'nem_fest', this.address, 0, '')
       },
       tapCopy () {
         this.showToast()
@@ -112,15 +96,6 @@
       showToast () {
         let toastMsg = 'コピーしました'
         this.$toast(toastMsg)
-        /*
-        this.$toasted.show(toastMsg, {
-          theme: 'outline',
-          position: 'bottom-center',
-          icon: 'assignment',
-          fitToScreen: true,
-          duration: 2000
-        })
-        */
       },
       close () {
         this.$emit('dialog-wallet-account-close', 'close')

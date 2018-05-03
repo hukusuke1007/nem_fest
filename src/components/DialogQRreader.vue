@@ -55,7 +55,8 @@
       content: ''
     }),
     computed: {
-      ...mapGetters('Auth', ['isAuth', 'authPassword'])
+      ...mapGetters('Auth', ['isAuth', 'authPassword']),
+      ...mapGetters('Nem', ['nemBalance', 'festBalance'])
     },
     mounted () {
     },
@@ -63,14 +64,6 @@
       dialogVal: {
         type: Boolean,
         default: false
-      },
-      nemBalance: {
-        type: Number,
-        default: 0
-      },
-      festBalance: {
-        type: Number,
-        default: 0
       }
     },
     watch: {
