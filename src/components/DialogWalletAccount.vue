@@ -6,7 +6,7 @@
    scrollable
   >
   <v-card flat>
-      <v-toolbar card color="blue-grey lighten-5" dark>
+      <v-toolbar color="blue-grey lighten-5" dark>
         <v-btn icon @click.native="close()" dark>
           <v-icon color="primary">arrow_back</v-icon>
         </v-btn>

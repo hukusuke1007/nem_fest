@@ -6,15 +6,13 @@
      <v-toolbar
       dark
       color="blue-grey lighten-5"
-      clipped-left
       fixed
       app
      >
-      <v-btn icon class="hidden-xs-only primary--text" @click="back">
-        <v-icon>arrow_back</v-icon>
-      </v-btn>
-       <v-toolbar-title class="black--text">{{ title }}</v-toolbar-title>
-       <v-spacer></v-spacer>
+     <v-toolbar-side-icon @click="back">
+      <v-icon color="primary">arrow_back</v-icon>
+     </v-toolbar-side-icon>
+     <v-toolbar-title class="black--text">{{ title }}</v-toolbar-title>
      </v-toolbar>
      <v-content>
 

@@ -6,7 +6,7 @@
    scrollable
   >
   <v-card flat>
-      <v-toolbar card color="blue-grey lighten-5" dark>
+      <v-toolbar color="blue-grey lighten-5" dark>
         <v-toolbar-title class="black--text">QRコードを読み込む</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn icon @click.native="close()" dark>

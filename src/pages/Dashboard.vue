@@ -41,6 +41,25 @@
                  v-bind:festBalance="festBalance"
                  v-on:dialog-qr-reader-scan="getQRContent"
                  v-on:dialog-qr-reader-close="tapQRreaderClose"></DialogQRreader>
+
+    <!-- パスワード入力 -->
+    <DialogAuthWallet v-bind:dialogVal="isShowAuthWallet"
+                 v-on:dialog-auth-wallet-close="tapAuthWalletClose"
+                 v-on:dialog-auth-wallet-notify="tapAuthWalletNotify"></DialogAuthWallet>
+
+    <!-- ダイアログ -->
+    <DialogConfirm v-bind:dialogVal="isShowDialog"
+                   v-bind:titleVal="dialogTitle"
+                   v-bind:messageVal="dialogMsg"
+                   v-on:dialog-confirm-event-tap-positive="tapDialogConfirm"></DialogConfirm>
+
+    <!-- 確認ダイアログ -->
+    <DialogPositiveNegative v-bind:dialogVal="isShowDialogPosNeg"
+                   v-bind:titleVal="dialogPosNegTitle"
+                   v-bind:messageVal="dialogPosNegTitleMessage"
+                   v-bind:positiveVal="dialogPosMsg"
+                   v-bind:negativeVal="dialogNegMsg"
+                   v-on:dialog-positive-negative-event-tap="tapDialogPosNeg"></DialogPositiveNegative>
   </v-container>
 </template>
 
@@ -49,6 +68,9 @@
   import nemWrapper from '@/js/nem_wrapper'
   import DialogWalletAccount from '@/components/DialogWalletAccount'
   import DialogQRreader from '@/components/DialogQRreader'
+  import DialogAuthWallet from '@/components/DialogAuthWallet'
+  import DialogConfirm from '@/components/DialogConfirm'
+  import DialogPositiveNegative from '@/components/DialogPositiveNegative'
   import { mapGetters, mapActions } from 'vuex'
 
   export default {
@@ -60,14 +82,26 @@
       nemBalance: 0,
       festBalance: 0,
       mosaics: [],
-      createBtnName: 'ダッシュボード',
+      selectBtn: '',
       isShowAccount: false,
       isShowQRreader: false,
+      isShowAuthWallet: false,
+      isShowDialog: false,
+      isShowDialogPosNeg: false,
+      dialogTitle: '',
+      dialogMsg: '',
+      dialogPosNegTitle: '',
+      dialogPosNegTitleMessage: '',
+      dialogPosMsg: '',
+      dialogNegMsg: '',
       description: '本人確認できていません。<br>TOPページで認証してください。'
     }),
     components: {
       DialogWalletAccount,
-      DialogQRreader
+      DialogQRreader,
+      DialogAuthWallet,
+      DialogConfirm,
+      DialogPositiveNegative
     },
     computed: {
       ...mapGetters('Auth', ['isAuth', 'authPassword'])
@@ -139,6 +173,28 @@
           this.isShowQRreader = false
         }
       },
+      resetWallet () {
+        let toastMsg = 'リセットしました'
+        this.$toast(toastMsg)
+        /*
+        this.doAuth(false)
+        this.doAuthPassword('')
+        dbWrapper.removeItem(dbWrapper.KEY_WALLET_INFO)
+          .then((walletResult) => {
+            dbWrapper.removeItem(dbWrapper.KEY_AUTH_PASSWORD)
+              .then((authResult) => {
+                this.$toast(toastMsg)
+                this.$router.push({name: 'TopPage'})
+              }).catch((err) => {
+                console.log(err)
+                toastMsg = 'ERROR：削除に失敗しました'
+              })
+          }).catch((err) => {
+            console.log(err)
+            toastMsg = 'ERROR：削除に失敗しました'
+          })
+        */
+      },
       tapShowAccount () {
         this.isShowAccount = true
       },
@@ -150,14 +206,48 @@
       tapShowHistory () {
       },
       tapShowPrivateKey () {
+        this.selectBtn = 'private'
+        this.isShowAuthWallet = true
       },
       tapWalletReset () {
+        this.selectBtn = 'reset'
+        this.isShowAuthWallet = true
       },
       tapWalletAccountClose (status) {
         this.isShowAccount = false
       },
       tapQRreaderClose (status) {
         this.isShowQRreader = false
+      },
+      tapAuthWalletClose (status) {
+        this.isShowAuthWallet = false
+      },
+      tapAuthWalletNotify (status) {
+        console.log(status)
+        if (status === 'auth_success') {
+          if (this.selectBtn === 'private') {
+            this.dialogTitle = '秘密鍵'
+            this.dialogMsg = this.pairKey.privateKey
+            this.isShowDialog = true
+          } else if (this.selectBtn === 'reset') {
+            this.dialogPosNegTitle = 'ウォレットのリセット'
+            this.dialogPosNegTitleMessage = 'ウォレットをリセットしますか？'
+            this.dialogPosMsg = 'リセットする'
+            this.dialogNegMsg = 'いいえ'
+            this.isShowDialogPosNeg = true
+          }
+        } else if (status === 'created') {
+          this.$router.push({name: 'TopPage'})
+        }
+      },
+      tapDialogConfirm (status) {
+        this.isShowDialog = false
+      },
+      tapDialogPosNeg (isPositive, message) {
+        this.isShowDialogPosNeg = false
+        if (isPositive) {
+          this.resetWallet()
+        }
       }
     }
   }

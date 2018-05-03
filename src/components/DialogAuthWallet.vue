@@ -182,6 +182,7 @@
             if (this.password === decPass) {
               this.isError = false
               this.setStateStore(true, this.password)
+              this.clear()
               this.$emit('dialog-auth-wallet-notify', 'auth_success')
               this.$emit('dialog-auth-wallet-close', 'close')
             } else {
@@ -221,6 +222,7 @@
       tapConfirm () {
         console.log(this.isShowDialogConfirm)
         if (this.isShowDialogConfirm === true && this.isError === false) {
+          this.clear()
           this.isShowDialogConfirm = false
           this.$emit('dialog-auth-wallet-notify', 'created')
           this.$emit('dialog-auth-wallet-close', 'close')
