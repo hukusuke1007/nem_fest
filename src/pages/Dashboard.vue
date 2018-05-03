@@ -232,7 +232,10 @@
         this.isShowTransfer = true
       },
       tapTransferSended (status, message) {
-        if (status === 'SUCCESS') { this.isShowTransfer = false }
+        if (status === 'SUCCESS') {
+          this.isShowTransfer = false
+          this.isSelectTrans = false
+        }
         this.$toast(message)
       },
       tapTransferClose (status) {

@@ -262,6 +262,7 @@
         } else if (this.transactionType === 'mosaics') {
           // モザイク送金
           console.log('mosaics')
+          this.trMosaics.item[0].quantity = this.senderItem.amount
           nemWrapper.transferTransactionMosaics(this.senderItem.address, this.trMosaics.item, this.senderItem.message, this.pairKey.privateKey)
             .then((result) => {
               console.log(result)
@@ -291,7 +292,7 @@
             let item = {
               namespace: element.namespaceId,
               mosaic: element.name,
-              quantity: element.amount
+              quantity: 0
             }
             this.trMosaics.item.push(item)
             this.trMosaics.other.push(element)
