@@ -171,8 +171,13 @@
           } else {
             this.senderItem.amount = 0
           }
-          this.senderItem.message = content.data.msg
+          if ('msg' in content.data) {
+            this.senderItem.message = content.data.msg
+          } else {
+            this.senderItem.message = ''
+          }
           this.isShowQRreader = false
+          this.transactionType = 'nem'
           this.isShowTransfer = true
         }
       },
@@ -186,6 +191,7 @@
           .then((walletResult) => {
             dbWrapper.removeItem(dbWrapper.KEY_AUTH_PASSWORD)
               .then((authResult) => {
+                this.doClearAll()
                 this.$toast(toastMsg)
                 this.$router.push({name: 'TopPage'})
               }).catch((err) => {
@@ -226,7 +232,7 @@
         this.isShowTransfer = true
       },
       tapTransferSended (status, message) {
-        this.isShowTransfer = false
+        if (status === 'SUCCESS') { this.isShowTransfer = false }
         this.$toast(message)
       },
       tapTransferClose (status) {

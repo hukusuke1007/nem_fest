@@ -28,7 +28,7 @@ Vue.use(VueLocalForage)
 Vue.use(VueQriously)
 Vue.use(Toast, {
   defaultType: 'bottom',
-  duration: 2000,
+  duration: 3000,
   wordWrap: true,
   width: '200px'
 })

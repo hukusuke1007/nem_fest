@@ -82,7 +82,7 @@
               <v-card-title>
               <div style="margin: 2px, 10px, 2px, 0px; text-align: left;">
                 <div class="grey--text" style="font-size: 1.4em;">数量 {{ senderItem.amount }}</div>
-                <div class="grey--text" style="font-size: 1.4em;">手数料 {{ fee }}</div>
+                <div class="grey--text" style="font-size: 1.4em;">手数料 {{ fee }} xem</div>
                 <div class="black--text" style="font-size: 2em;">合計 {{ totalAmount }}</div>
                 <div class="grey--text" style="font-size: 1.2em;">残高 {{ remainBalance }}</div>
               </div>
@@ -145,7 +145,7 @@
     }),
     computed: {
       ...mapGetters('Auth', ['isAuth', 'authPassword']),
-      ...mapGetters('Nem', ['pairKey', 'nemBalance', 'festBalance', 'mosaics'])
+      ...mapGetters('Nem', ['pairKey', 'nemBalance', 'festBalance', 'mosaics', 'targetMosaicNamespace'])
     },
     components: {
       DialogPositiveNegative,
@@ -170,6 +170,7 @@
     watch: {
       dialogVal (val) {
         this.dialog = val
+        this.setTransferMosaics()
       },
       transactionType (val) {
         console.log('transactionType: ' + val)
@@ -205,12 +206,22 @@
             let message = '残高が足りません'
             this.$toast(message)
           } else {
-            this.dialogPosNegMsg = '送金しますか？<br><br>' +
-              '数量:<br>' + this.senderItem.amount + ' xem' + '<br>' +
-              '手数量:<br>' + this.fee + ' xem' + '<br>' +
-              '合計:<br>' + this.totalAmount + ' xem' + '<br><br>' +
-              '送金先:<br>' + this.senderItem.address + '<br><br>' +
-              'メッセージ:<br>' + this.senderItem.message
+            if (this.transactionType === 'nem') {
+              this.dialogPosNegMsg = 'NEMを送金しますか？<br><br>' +
+                '数量:<br>' + this.senderItem.amount + ' xem' + '<br>' +
+                '手数量:<br>' + this.fee + ' xem' + '<br>' +
+                '合計:<br>' + this.totalAmount + ' xem' + '<br><br>' +
+                '送金先:<br>' + this.senderItem.address + '<br><br>' +
+                'メッセージ:<br>' + this.senderItem.message
+            } else if (this.transactionType === 'mosaics') {
+              let name = this.trMosaics.other[0].name
+              let namespaceId = this.trMosaics.other[0].namespaceId
+              this.dialogPosNegMsg = namespaceId + 'を送金しますか？<br><br>' +
+                '数量:<br>' + this.senderItem.amount + ' ' + name + '<br>' +
+                '手数量:<br>' + this.fee + ' xem' + '<br>' +
+                '送金先:<br>' + this.senderItem.address + '<br><br>' +
+                'メッセージ:<br>' + this.senderItem.message
+            }
             this.isShowDialogPosNeg = true
           }
         }
@@ -225,8 +236,8 @@
       },
       sendTransaction () {
         let message = ''
-        let successMsg = '送金しました。<br>反映されるまで数分かかることがあります。' + '<br><br>'
-        let errorMsg = '送金エラー' + '<br><br>' + 'メッセージ:<br>'
+        let successMsg = '送金しました'
+        let errorMsg = '送金エラー'
 
         this.isShowProgress = true
         if (this.transactionType === 'nem') {
@@ -236,18 +247,17 @@
             .then((result) => {
               console.log(result)
               if (result.message === 'SUCCESS') {
-                message = successMsg + 'Hash:<br>' + result.transactionHash.data + '<br>'
+                message = successMsg
               } else {
-                message = errorMsg + result.message + '<br>'
+                message = errorMsg
               }
               this.isShowProgress = false
               this.sended(result.message, message)
             }).catch((err) => {
+              this.isShowProgress = false
               console.error(err)
               let error = err.error.message
-              message = errorMsg + error + '<br>'
-              this.isShowProgress = false
-              this.sended(error, message)
+              this.sended(error, errorMsg)
             })
         } else if (this.transactionType === 'mosaics') {
           // モザイク送金
@@ -256,49 +266,73 @@
             .then((result) => {
               console.log(result)
               if (result.message === 'SUCCESS') {
-                message = successMsg + 'Hash:<br>' + result.transactionHash.data + '<br>'
+                message = successMsg
               } else {
-                message = errorMsg + result.message + '<br>'
+                message = errorMsg
               }
               this.isShowProgress = false
               this.sended(result.message, message)
             }).catch((err) => {
+              this.isShowProgress = false
               console.error(err)
               let error = err.error.message
-              message = errorMsg + error + '<br>'
-              this.isShowProgress = false
-              this.sended(error, message)
+              this.sended(error, errorMsg)
             })
         } else {
           console.log(this.transactionType)
           this.isShowProgress = false
         }
       },
+      setTransferMosaics () {
+        let target = this.targetMosaicNamespace
+        this.trMosaics = { item: [], other: [] }
+        this.mosaics.forEach((element) => {
+          if (element.namespaceId === target.namespaceId && element.name === target.name) {
+            let item = {
+              namespace: element.namespaceId,
+              mosaic: element.name,
+              quantity: element.amount
+            }
+            this.trMosaics.item.push(item)
+            this.trMosaics.other.push(element)
+          }
+        })
+      },
       update (tag, val) {
-        // 手数料
+        // 残高計算
+        if (this.transactionType === 'nem') {
+          let amount = Number(this.senderItem.amount)
+          let n = 6 // 下6桁まで残す.
+          this.totalAmount = Math.floor(amount * Math.pow(10, n)) / Math.pow(10, n)
+          this.remainBalance = this.nemBalance - amount
+        } else if (this.transactionType === 'mosaics') {
+          let amount = Number(this.senderItem.amount)
+          // let n = this.trMosaics.other[0].element.divisibility
+          this.remainBalance = this.festBalance - amount
+          this.totalAmount = amount // Math.floor(amount * Math.pow(10, n)) / Math.pow(10, n)
+        }
+
+        // 手数料を計算.
         if ((this.rules.senderAddrLimit(this.senderItem.address) === true) &&
             (this.rules.senderAddrInput(this.senderItem.address) === true)) {
           if (this.transactionType === 'nem') {
+            // NEM
             this.fee = nemWrapper.getFeeTransferXem(this.senderItem.address, this.senderItem.amount, this.senderItem.message)
+            let n = 6 // 下6桁まで残す.
+            this.totalAmount = Math.floor((this.totalAmount + this.fee) * Math.pow(10, n)) / Math.pow(10, n)
+            this.remainBalance = Math.floor((this.remainBalance - this.fee) * Math.pow(10, n)) / Math.pow(10, n)
           } else if (this.transactionType === 'mosaics') {
-            if ((this.rules.senderAddrLimit(this.senderAddr) === true) && (this.rules.senderAddrInput(this.senderAddr) === true)) {
-              nemWrapper.getFeeTransferMosaics(this.senderAddr, this.trMosaics.item, this.message)
-                .then((result) => {
-                  this.fee = result
-                  console.log(this.fee)
-                }).catch((err) => {
-                  console.error(err)
-                  this.fee = 0
-                })
-            }
+            // モザイク
+            nemWrapper.getFeeTransferMosaics(this.senderItem.address, this.trMosaics.item, this.senderItem.message)
+              .then((result) => {
+                this.fee = result
+                console.log(this.fee)
+              }).catch((err) => {
+                console.error(err)
+                this.fee = 0
+              })
           }
         }
-        // トータルを計算
-        let total = Number(this.senderItem.amount) + Number(this.fee)
-        let n = 6 // 下6桁まで残す.
-        this.totalAmount = Math.floor(total * Math.pow(10, n)) / Math.pow(10, n)
-        // 残高を計算
-        this.remainBalance = this.nemBalance - this.totalAmount
       },
       clear () {
         this.senderItem.address = ''
@@ -307,7 +341,6 @@
         this.fee = 0
       },
       sended (stauts, message) {
-        this.clear()
         this.$emit('dialog-transfer-transaction-sended', stauts, message)
       },
       close () {

@@ -1,5 +1,8 @@
 import nemWrapper from '@/js/nem_wrapper'
 
+// テスト用にLCNEMを採用
+const MOSAIC_FEST = { namespaceId: 'lc', name: 'jpy' }
+
 export default {
   namespaced: true,
   state: {
@@ -8,7 +11,8 @@ export default {
     pairKey: {},
     nemBalance: 0,
     festBalance: 0,
-    mosaics: []
+    mosaics: [],
+    targetMosaicNamespace: MOSAIC_FEST
   },
   getters: {
     walletItem: state => state.walletItem,
@@ -16,7 +20,9 @@ export default {
     pairKey: state => state.pairKey,
     nemBalance: state => state.nemBalance,
     festBalance: state => state.festBalance,
-    mosaics: state => state.mosaics
+    festMosaic: state => state.festMosaic,
+    mosaics: state => state.mosaics,
+    targetMosaicNamespace: state => state.targetMosaicNamespace
   },
   mutations: {
     setWalletItem (state, value) {
@@ -40,8 +46,14 @@ export default {
       state.festBalance = value
     },
     setMosaics (state, value) {
-      console.log('setMosaics: ' + value)
+      console.log('setMosaics:')
+      console.log(value)
       state.mosaics = value
+    },
+    setTargetMosaicNamespace (state, value) {
+      console.log('setTargetMosaicNamespace:')
+      console.log(value)
+      state.targetMosaicNamespace = value
     }
   },
   actions: {
@@ -59,11 +71,12 @@ export default {
       }
     },
     doUpdateMosaicsBalance ({ commit, getters }) {
+      console.log('doUpdateMosaicsBalance')
       let mosaics = []
       if (getters.address.length > 0) {
         nemWrapper.getMosaics(getters.address)
           .then((result) => {
-            console.log(result)
+            console.log('get Mosaics')
             result.forEach((element) => {
               let mosaic = {}
               mosaic.text = element.mosaicId.namespaceId + ':' + element.mosaicId.name
@@ -75,6 +88,10 @@ export default {
               mosaic.supplyMutable = element.properties.supplyMutable
               mosaic.transferable = element.properties.transferable
               mosaics.push(mosaic)
+
+              if ((mosaic.namespaceId === MOSAIC_FEST.namespaceId) && (mosaic.name === MOSAIC_FEST.name)) {
+                commit('setFestBalance', mosaic.amount)
+              }
             })
             commit('setMosaics', mosaics)
           }).catch((err) => {
@@ -83,6 +100,14 @@ export default {
       } else {
         console.log('nothing address')
       }
+    },
+    doClearAll ({ commit, getters }) {
+      commit('setWalletItem', null)
+      commit('setAddress', '')
+      commit('setPairKey', {})
+      commit('setNemBalance', 0)
+      commit('setFestBalance', 0)
+      commit('setMosaics', [])
     },
     doWalletItem ({ commit, getters }, value) {
       commit('setWalletItem', value)
@@ -101,6 +126,9 @@ export default {
     },
     doMosaics ({ commit, getters }, value) {
       commit('setMosaics', value)
+    },
+    doTargetMosaicNamespace ({ commit, getters }, value) {
+      commit('setTargetMosaicNamespace', value)
     }
   }
 }

@@ -79,7 +79,7 @@
     methods: {
       ...mapActions('Auth', ['doAuth', 'doAuthPassword']),
       reloadItem () {
-        this.qrValue = nemWrapper.getJSONInvoiceForQRcode(2, 1, 'nem_fest', this.address, 0, '')
+        this.qrValue = nemWrapper.getJSONInvoiceForQRcode(2, 2, 'nem_fest', this.address, 0, '')
       },
       tapCopy () {
         this.showToast()
