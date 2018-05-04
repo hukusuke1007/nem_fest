@@ -13,6 +13,7 @@ import Toast from 'vue2-toast'
 // Page
 import TopPage from '@/pages/TopPage'
 import Dashboard from '@/pages/Dashboard'
+import History from '@/pages/History'
 
 Vue.use(Router)
 Vue.use(Vuetify, {
@@ -44,6 +45,11 @@ export default new Router({
       path: '/dashboard',
       name: 'Dashboard',
       component: Dashboard
+    },
+    {
+      path: '/history',
+      name: 'History',
+      component: History
     }
   ]
 })

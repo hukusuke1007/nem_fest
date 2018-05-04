@@ -214,6 +214,7 @@
         this.isShowQRreader = true
       },
       tapShowHistory () {
+        this.$router.push({name: 'History'})
       },
       tapShowPrivateKey () {
         this.selectBtn = 'private'
