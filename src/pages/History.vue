@@ -28,11 +28,17 @@
         </template>
       </div>
     </v-list>
+
     <!-- ダイアログ -->
     <DialogConfirm v-bind:dialogVal="isShowDialog"
                    v-bind:titleVal="dialogtitle"
                    v-bind:messageVal="dialogMessage"
                    v-on:dialog-confirm-event-tap-positive="tapPositive"></DialogConfirm>
+
+    <!-- 履歴詳細ダイアログ -->
+    <DialogHistoryDetail v-bind:dialogVal="isShowHistoryDetail"
+                   v-bind:item="selectItem"
+                   v-on:dialog-history-detail-close="tapHistoryDetailClose"></DialogHistoryDetail>
   </v-card>
   </v-flex>
 </template>
@@ -41,6 +47,7 @@
   // import dbWrapper from '@/js/local_database_wrapper'
   import nemWrapper from '@/js/nem_wrapper'
   import DialogConfirm from '@/components/DialogConfirm'
+  import DialogHistoryDetail from '@/components/DialogHistoryDetail'
   import {TransferTransaction, MultisigTransaction} from 'nem-library'
   import { mapGetters, mapActions } from 'vuex'
   export default {
@@ -49,11 +56,14 @@
       // header: '送金履歴一覧 (最大100件)',
       dialogtitle: '',
       isShowDialog: false,
+      isShowHistoryDetail: false,
       dialogMessage: '',
+      selectItem: {},
       items: []
     }),
     components: {
-      DialogConfirm
+      DialogConfirm,
+      DialogHistoryDetail
     },
     computed: {
       ...mapGetters('Auth', ['isAuth', 'authPassword']),
@@ -78,6 +88,7 @@
         this.items = []
         nemWrapper.getTransaction(this.address, 100, undefined, undefined)
           .then((result) => {
+            console.log(result)
             this.setItemsForTransaction(result)
           }).catch((err) => {
             console.error(err)
@@ -194,8 +205,9 @@
           })
       },
       tapItem (index) {
-        let item = this.items[index]
-        // console.log(item)
+        this.selectItem = this.items[index]
+        console.log(this.selectItem)
+        /*
         this.dialogtitle = item.timeStamp
         if (item.mosaicsAddInfos.length > 0) {
           let mosaicMessage = '【モザイク】<br><br>'
@@ -219,10 +231,15 @@
                      'ハッシュ:<br>' + item.hash + '<br><br>' +
                      'メッセージ:<br>' + item.message
         }
-        this.isShowDialog = true
+        */
+        // this.isShowDialog = true
+        this.isShowHistoryDetail = true
       },
       tapPositive (message) {
         this.isShowDialog = false
+      },
+      tapHistoryDetailClose (message) {
+        this.isShowHistoryDetail = false
       }
     }
   }
