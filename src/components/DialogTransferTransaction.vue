@@ -106,6 +106,11 @@
                  positiveVal="送金する"
                  negativeVal="いいえ"
                  v-on:dialog-positive-negative-event-tap="tapSendPosNeg"></DialogPositiveNegative>
+  <!-- ダイアログ -->
+  <DialogConfirm v-bind:dialogVal="isShowDialog"
+                 v-bind:titleVal="dialogTitle"
+                 v-bind:messageVal="dialogMsg"
+                 v-on:dialog-confirm-event-tap-positive="tapDialogConfirm"></DialogConfirm>
   <!-- プログレス -->
   <ProgressCircular v-bind:isShowVal="isShowProgress"></ProgressCircular>
   
@@ -115,16 +120,21 @@
 <script>
   import nemWrapper from '@/js/nem_wrapper'
   import DialogPositiveNegative from '@/components/DialogPositiveNegative'
+  import DialogConfirm from '@/components/DialogConfirm'
   import ProgressCircular from '@/components/ProgressCircular'
   import { mapGetters, mapActions } from 'vuex'
+
   export default {
     data: () => ({
       dialog: false,
       valid: false,
       title: '送金する',
       isShowDialogPosNeg: false,
+      isShowDialog: false,
       isShowProgress: false,
       dialogPosNegMsg: '',
+      dialogTitle: '',
+      dialogMsg: '',
       fee: 0,
       totalAmount: 0,
       remainBalance: 0,
@@ -149,6 +159,7 @@
     },
     components: {
       DialogPositiveNegative,
+      DialogConfirm,
       ProgressCircular
     },
     mounted () {
@@ -256,8 +267,8 @@
             }).catch((err) => {
               this.isShowProgress = false
               console.error(err)
-              let error = err.error.message
-              this.sended(error, errorMsg)
+              this.showDialog('送金エラー', err.error.message)
+              // this.sended(error, errorMsg)
             })
         } else if (this.transactionType === 'mosaics') {
           // モザイク送金
@@ -276,8 +287,8 @@
             }).catch((err) => {
               this.isShowProgress = false
               console.error(err)
-              let error = err.error.message
-              this.sended(error, errorMsg)
+              this.showDialog('送金エラー', err.error.message)
+              // this.sended(error, errorMsg)
             })
         } else {
           console.log(this.transactionType)
@@ -335,6 +346,14 @@
           }
         }
       },
+      showDialog (title, message) {
+        this.dialogTitle = title
+        this.dialogMsg = message
+        this.isShowDialog = true
+      },
+      tapDialogConfirm () {
+        this.isShowDialog = false
+      },
       clear () {
         this.senderItem.address = ''
         this.senderItem.amount = 0
@@ -345,7 +364,7 @@
         this.$emit('dialog-transfer-transaction-sended', stauts, message)
       },
       close () {
-        this.clear()
+        // this.clear()
         this.$emit('dialog-transfer-transaction-close', 'close')
       }
     }
