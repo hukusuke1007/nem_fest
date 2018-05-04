@@ -12,6 +12,7 @@ export default {
     nemBalance: 0,
     festBalance: 0,
     mosaics: [],
+    transaction: [],
     targetMosaicNamespace: MOSAIC_FEST
   },
   getters: {
@@ -22,6 +23,7 @@ export default {
     festBalance: state => state.festBalance,
     festMosaic: state => state.festMosaic,
     mosaics: state => state.mosaics,
+    transaction: state => state.transaction,
     targetMosaicNamespace: state => state.targetMosaicNamespace
   },
   mutations: {
@@ -49,6 +51,11 @@ export default {
       console.log('setMosaics:')
       console.log(value)
       state.mosaics = value
+    },
+    setTransactions (state, value) {
+      console.log('setTransactions:')
+      console.log(value)
+      state.transaction = value
     },
     setTargetMosaicNamespace (state, value) {
       console.log('setTargetMosaicNamespace:')
@@ -100,6 +107,22 @@ export default {
       } else {
         console.log('nothing address')
       }
+    },
+    doUpdateTransaction ({ commit, getters }) {
+      let address = getters.address
+      let transaction = []
+      nemWrapper.getTransaction(address, 100, undefined, undefined)
+        .then((allResult) => {
+          transaction = allResult
+          return nemWrapper.getUnconfirmedTransaction(address)
+        }).then((unResult) => {
+          console.log('getUnconfirmedTransaction')
+          console.log(unResult)
+          transaction = unResult.concat(transaction)
+          commit('setTransactions', transaction)
+        }).catch((err) => {
+          console.error(err)
+        })
     },
     doClearAll ({ commit, getters }) {
       commit('setWalletItem', null)

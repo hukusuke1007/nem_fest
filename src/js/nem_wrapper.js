@@ -97,6 +97,19 @@ exports.getTransaction = (addr, pageSize, hash, id) => {
   return promise
 }
 
+// 未承認トランザクションの取得.
+exports.getUnconfirmedTransaction = (addr) => {
+  let promise = new Promise((resolve, reject) => {
+    console.log(addr)
+    const address = new Address(addr)
+    accountHttp.unconfirmedTransactions(address).subscribe(
+      unconfirmedTransaction => { resolve(unconfirmedTransaction) },
+      error => { reject(error) }
+    )
+  })
+  return promise
+}
+
 // 未承認トランザクション取得.
 exports.getUncofirmedTransactionListener = (addr) => {
   let promise = new Promise((resolve, reject) => {

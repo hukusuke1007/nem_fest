@@ -4,23 +4,15 @@
     <v-list two-line>
       <div v-if="isAuth">
         <template v-for="(item, index) in items">
-
           <v-list-tile ripple :key="index" @click="tapItem(index)">
             <v-list-tile-content v-show="item.type === `TransferTransaction`">
-              <v-list-tile-title>通貨: {{ item.namespace }}:{{ item.name }}</v-list-tile-title>
-              <!-- <v-list-tile-sub-title>受取先: {{ item.recipientAddr }}</v-list-tile-sub-title> -->
-              <div v-if="!item.mosaics || item.mosaics.length === 0">
-                <v-list-tile-sub-title>送金量: {{ item.amount }}</v-list-tile-sub-title>
-              </div>
-              <div v-else>
-                <v-list-tile-sub-title><font color="blue">モザイクはタップして確認</font></v-list-tile-sub-title>
-              </div>
-              <v-list-tile-sub-title>メッセージ: {{ item.message }}</v-list-tile-sub-title>
+              <v-list-tile-title><div :class="item.depositId">{{ item.deposit }}</div></v-list-tile-title>
+              <v-list-tile-sub-title>{{ item.recipientAddr }}</v-list-tile-sub-title>
+              <v-list-tile-sub-title>送金量: {{ item.amount }}</v-list-tile-sub-title>
             </v-list-tile-content>
             <v-list-tile-action>
               <v-list-tile-action-text>{{ item.timeStamp }}</v-list-tile-action-text>
-              <v-list-tile-action-text><div :class="item.depositColor">{{ item.deposit }}</div></v-list-tile-action-text>
-              <v-list-tile-action-text>手数料: {{ item.fee }}</v-list-tile-action-text>
+              <v-list-tile-action-text><div :class="item.statusId">{{ item.status }}</div></v-list-tile-action-text>
               <!-- <v-icon color="grey lighten-1">keyboard_arrow_right</v-icon> -->
             </v-list-tile-action>
           </v-list-tile>
@@ -67,10 +59,10 @@
     },
     computed: {
       ...mapGetters('Auth', ['isAuth', 'authPassword']),
-      ...mapGetters('Nem', ['address', 'nemBalance', 'festBalance'])
+      ...mapGetters('Nem', ['address', 'nemBalance', 'festBalance', 'transaction'])
     },
     mounted () {
-      this.doTitle('トランザクション履歴')
+      this.doTitle('履歴')
       this.reloadItem()
     },
     props: {
@@ -80,19 +72,19 @@
         if (val) {
           // this.setTransactionListener()
         }
+      },
+      transaction (val) {
+        this.setItemsForTransaction(val)
       }
     },
     methods: {
+      ...mapActions('Auth', ['doAuth']),
       ...mapActions('Top', ['doTitle']),
+      ...mapActions('Nem', ['doAddress', 'doUpdateTransaction']),
       reloadItem () {
-        this.items = []
-        nemWrapper.getTransaction(this.address, 100, undefined, undefined)
-          .then((result) => {
-            console.log(result)
-            this.setItemsForTransaction(result)
-          }).catch((err) => {
-            console.error(err)
-          })
+        // this.doAuth(true) // 削除予定(テスト用)
+        // this.doAddress('NCQVG5KPMB6VHOBSHRUM2D3ZENL4F4Z6MVUNTFS3') // 削除予定(テスト用)
+        this.doUpdateTransaction()
       },
       setItemsForTransaction (transactions) {
         transactions.forEach((element, index) => {
@@ -104,11 +96,23 @@
             let nameVal = element._xem.mosaicId.name
             let namespaceVal = element._xem.mosaicId.namespaceId
             let depositMsg = '入金'
-            let depositMsgColor = 'example2'
+            let depositMsgColor = 'recieve'
             if (element.signer.address.value === this.address) {
               depositMsg = '出金'
-              depositMsgColor = 'example1'
+              depositMsgColor = 'send'
             }
+            let amount = element._xem.amount
+            let confirmMsg = '承認'
+            let confirmMsgColor = 'confirm'
+            let hash = ''
+            if (element.transactionInfo == null) {
+              confirmMsg = '未承認'
+              confirmMsgColor = 'unConfirm'
+              amount = '承認中...'
+            } else {
+              hash = element.transactionInfo.hash.data
+            }
+
             let item = {
               type: 'TransferTransaction',
               message: convMessage,
@@ -116,14 +120,16 @@
               recipientAddr: element.recipient.value,
               senderAddr: element.signer.address.value,
               timeStamp: dateString,
-              hash: element.transactionInfo.hash.data,
+              hash: hash,
               name: nameVal,
               namespace: namespaceVal,
-              amount: element._xem.amount,
+              amount: amount,
               mosaics: element._mosaics,
               mosaicsAddInfos: [],
               deposit: depositMsg,
-              depositColor: depositMsgColor
+              depositId: depositMsgColor,
+              status: confirmMsg,
+              statusId: confirmMsgColor
             }
             this.items.push(item)
           } else if (element instanceof MultisigTransaction) {
@@ -153,7 +159,7 @@
               if ((mosaic.mosaicId.name !== 'xem') && (mosaic.mosaicId.namespaceId !== 'nem')) {
                 nemWrapper.getMosaicDefinition(mosaic.mosaicId)
                   .then((result) => {
-                    console.log(result)
+                    // console.log(result)
                     let mosaicsAddInfo = {
                       name: result.id.name,
                       namespaceId: result.id.namespaceId,
@@ -207,6 +213,7 @@
       tapItem (index) {
         this.selectItem = this.items[index]
         console.log(this.selectItem)
+        this.isShowHistoryDetail = true
         /*
         this.dialogtitle = item.timeStamp
         if (item.mosaicsAddInfos.length > 0) {
@@ -233,7 +240,6 @@
         }
         */
         // this.isShowDialog = true
-        this.isShowHistoryDetail = true
       },
       tapPositive (message) {
         this.isShowDialog = false
@@ -247,6 +253,8 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.example1 { color: #ff0000; }
-.example2 { color: #008000; }
+.send { color: #ff0000; }
+.recieve { color: #008000; }
+.confirm { color: #00b894; font-weight: bold;}
+.unConfirm { color: #fdcb6e; font-weight: bold;}
 </style>
