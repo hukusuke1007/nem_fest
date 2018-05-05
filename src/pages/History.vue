@@ -8,12 +8,17 @@
             <v-list-tile-content v-show="item.type === `TransferTransaction`">
               <v-list-tile-title><div :class="item.depositId">{{ item.deposit }}</div></v-list-tile-title>
               <v-list-tile-sub-title>{{ item.recipientAddr }}</v-list-tile-sub-title>
-              <v-list-tile-sub-title>送金量: {{ item.amount }}</v-list-tile-sub-title>
+              <div v-if="item.mosaicsAddInfos.length===0">
+                <v-list-tile-sub-title>送金量: {{ item.amount }}</v-list-tile-sub-title>
+              </div>
+              <div v-else>
+                <v-list-tile-sub-title>モザイクの詳細はこちら</v-list-tile-sub-title>
+              </div>
             </v-list-tile-content>
             <v-list-tile-action>
               <v-list-tile-action-text>{{ item.timeStamp }}</v-list-tile-action-text>
               <v-list-tile-action-text><div :class="item.statusId">{{ item.status }}</div></v-list-tile-action-text>
-              <!-- <v-icon color="grey lighten-1">keyboard_arrow_right</v-icon> -->
+              <v-icon color="grey lighten-1">keyboard_arrow_right</v-icon>
             </v-list-tile-action>
           </v-list-tile>
           <v-divider v-if="index + 1 < items.length" :key="`divider-${index}`"></v-divider>
@@ -59,7 +64,7 @@
     },
     computed: {
       ...mapGetters('Auth', ['isAuth', 'authPassword']),
-      ...mapGetters('Nem', ['address', 'nemBalance', 'festBalance', 'transaction'])
+      ...mapGetters('Nem', ['address', 'nemBalance', 'festBalance', 'transaction', 'transactionStatus'])
     },
     mounted () {
       this.doTitle('履歴')
@@ -74,19 +79,32 @@
         }
       },
       transaction (val) {
+        console.log('history_transaction', val)
         this.setItemsForTransaction(val)
+      },
+      transactionStatus (val) {
+        console.log('transactionStatus', val)
+        if (val === 'unconfirmed') {
+          console.log('transactionStatus: unconfirmed')
+          this.$toast('トランザクション承認中...')
+        } else if (val === 'confirmed') {
+          this.$toast('トランザクションが承認されました')
+          this.doTransactionStatus('none')
+        }
       }
     },
     methods: {
       ...mapActions('Auth', ['doAuth']),
       ...mapActions('Top', ['doTitle']),
-      ...mapActions('Nem', ['doAddress', 'doUpdateTransaction']),
+      ...mapActions('Nem', ['doAddress', 'doUpdateTransaction', 'doTransactionStatus']),
       reloadItem () {
         // this.doAuth(true) // 削除予定(テスト用)
         // this.doAddress('NCQVG5KPMB6VHOBSHRUM2D3ZENL4F4Z6MVUNTFS3') // 削除予定(テスト用)
         this.doUpdateTransaction()
+        // this.setItemsForTransaction(this.transaction)
       },
       setItemsForTransaction (transactions) {
+        this.items = []
         transactions.forEach((element, index) => {
           // console.log(element)
           if (element instanceof TransferTransaction) {
@@ -187,59 +205,11 @@
             array[index] = element
           }
         })
-        // this.header = '送金履歴一覧 (' + this.items.length + '件）'
-      },
-      setTransactionListener () {
-        // 未承認トランザクション
-        nemWrapper.getUncofirmedTransactionListener(this.address)
-          .then((result) => {
-            console.log('getUncofirmedTransactionListener OK')
-            console.log(result)
-          }).catch((err) => {
-            console.log('getUncofirmedTransactionListener ERROR')
-            console.error(err)
-          })
-
-        // 承認トランザクション
-        nemWrapper.getCofirmedTransactionListener(this.address)
-          .then((result) => {
-            console.log('getCofirmedTransactionListener OK')
-            console.log(result)
-          }).catch((err) => {
-            console.log('getCofirmedTransactionListener ERROR')
-            console.error(err)
-          })
       },
       tapItem (index) {
         this.selectItem = this.items[index]
         console.log(this.selectItem)
         this.isShowHistoryDetail = true
-        /*
-        this.dialogtitle = item.timeStamp
-        if (item.mosaicsAddInfos.length > 0) {
-          let mosaicMessage = '【モザイク】<br><br>'
-          item.mosaicsAddInfos.forEach((element) => {
-            let amount = element.quantity
-            if (element.divisibility > 0) {
-              amount = element.quantity / Math.pow(10, element.divisibility)
-            }
-            mosaicMessage += '[' + element.namespaceId + ':' + element.name + ']' + '<br>' +
-                     '送金量:<br>' + amount + ' ' + element.name + '<br><br>'
-          })
-          this.dialogMessage = mosaicMessage +
-                     '手数量:<br>' + item.fee + ' xem<br><br>' +
-                     '送金先:<br>「' + item.senderAddr + '」から<br>' + '「' + item.recipientAddr + '」へ<br><br>' +
-                     'ハッシュ:<br>' + item.hash + '<br><br>' +
-                     'メッセージ:<br>' + item.message
-        } else {
-          this.dialogMessage = '送金量:<br>' + item.amount + ' ' + item.name + '<br><br>' +
-                     '手数量:<br>' + item.fee + ' xem<br><br>' +
-                     '送金先:<br>「' + item.senderAddr + '」から<br>' + '「' + item.recipientAddr + '」へ<br><br>' +
-                     'ハッシュ:<br>' + item.hash + '<br><br>' +
-                     'メッセージ:<br>' + item.message
-        }
-        */
-        // this.isShowDialog = true
       },
       tapPositive (message) {
         this.isShowDialog = false

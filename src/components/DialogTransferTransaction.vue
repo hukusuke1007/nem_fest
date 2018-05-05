@@ -246,9 +246,8 @@
         }
       },
       sendTransaction () {
-        let message = ''
-        let successMsg = '送金しました'
-        let errorMsg = '送金エラー'
+        let successMsg = '送金しました。トランザクション承認中...'
+        let errorTitle = '送金エラー'
 
         this.isShowProgress = true
         if (this.transactionType === 'nem') {
@@ -257,18 +256,16 @@
           nemWrapper.transferTransaction(this.senderItem.address, this.senderItem.amount, this.senderItem.message, this.pairKey.privateKey)
             .then((result) => {
               console.log(result)
+              this.isShowProgress = false
               if (result.message === 'SUCCESS') {
-                message = successMsg
+                this.sended(result.message, successMsg)
               } else {
-                message = errorMsg
+                this.showDialog(errorTitle, result.message)
               }
-              this.isShowProgress = false
-              this.sended(result.message, message)
             }).catch((err) => {
-              this.isShowProgress = false
               console.error(err)
-              this.showDialog('送金エラー', err.error.message)
-              // this.sended(error, errorMsg)
+              this.isShowProgress = false
+              this.showDialog(errorTitle, err.error.message)
             })
         } else if (this.transactionType === 'mosaics') {
           // モザイク送金
@@ -277,18 +274,16 @@
           nemWrapper.transferTransactionMosaics(this.senderItem.address, this.trMosaics.item, this.senderItem.message, this.pairKey.privateKey)
             .then((result) => {
               console.log(result)
+              this.isShowProgress = false
               if (result.message === 'SUCCESS') {
-                message = successMsg
+                this.sended(result.message, successMsg)
               } else {
-                message = errorMsg
+                this.showDialog(errorTitle, result.message)
               }
-              this.isShowProgress = false
-              this.sended(result.message, message)
             }).catch((err) => {
-              this.isShowProgress = false
               console.error(err)
-              this.showDialog('送金エラー', err.error.message)
-              // this.sended(error, errorMsg)
+              this.isShowProgress = false
+              this.showDialog(errorTitle, err.error.message)
             })
         } else {
           console.log(this.transactionType)
@@ -318,10 +313,9 @@
           this.totalAmount = Math.floor(amount * Math.pow(10, n)) / Math.pow(10, n)
           this.remainBalance = this.nemBalance - amount
         } else if (this.transactionType === 'mosaics') {
-          let amount = Number(this.senderItem.amount)
-          // let n = this.trMosaics.other[0].element.divisibility
-          this.remainBalance = this.festBalance - amount
-          this.totalAmount = amount // Math.floor(amount * Math.pow(10, n)) / Math.pow(10, n)
+          let n = this.trMosaics.other[0].divisibility
+          this.remainBalance = Math.floor((this.festBalance - this.senderItem.amount) * Math.pow(10, n)) / Math.pow(10, n)
+          this.totalAmount = this.senderItem.amount
         }
 
         // 手数料を計算.

@@ -31,7 +31,7 @@ Vue.use(Toast, {
   defaultType: 'bottom',
   duration: 3000,
   wordWrap: true,
-  width: '200px'
+  width: '280px'
 })
 
 export default new Router({

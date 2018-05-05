@@ -121,7 +121,7 @@
     },
     computed: {
       ...mapGetters('Auth', ['isAuth', 'authPassword']),
-      ...mapGetters('Nem', ['walletItem', 'address', 'pairKey', 'nemBalance', 'festBalance', 'mosaics'])
+      ...mapGetters('Nem', ['walletItem', 'address', 'pairKey', 'nemBalance', 'festBalance', 'mosaics', 'transactionStatus'])
       /*
       ...mapGetters('Nem', {
         stWalletItem: 'walletItem',
@@ -144,10 +144,24 @@
         this.$router.push({name: 'TopPage'})
       }
     },
+    watch: {
+      address (val) {
+        this.doObserveTransaction()
+      },
+      transactionStatus (val) {
+        console.log('transactionStatus', val)
+        if (val === 'unconfirmed') {
+          this.$toast('トランザクション承認中...')
+        } else if (val === 'confirmed') {
+          this.$toast('トランザクションが承認されました')
+          this.doTransactionStatus('none')
+        }
+      }
+    },
     methods: {
       ...mapActions('Top', ['doTitle']),
       ...mapActions('Auth', ['doAuth', 'doAuthPassword']),
-      ...mapActions('Nem', ['doUpdateNemBalance', 'doUpdateMosaicsBalance', 'doWalletItem', 'doAddress', 'doPairKey']),
+      ...mapActions('Nem', ['doUpdateNemBalance', 'doUpdateMosaicsBalance', 'doObserveTransaction', 'doWalletItem', 'doAddress', 'doPairKey', 'doTransactionStatus']),
       getWallet () {
         dbWrapper.getItem(dbWrapper.KEY_WALLET_INFO)
           .then((result) => {
@@ -182,9 +196,7 @@
         }
       },
       resetWallet () {
-        let toastMsg = 'リセットしました'
-        this.$toast(toastMsg)
-        /*
+        this.$toast('リセットしました')
         this.doAuth(false)
         this.doAuthPassword('')
         dbWrapper.removeItem(dbWrapper.KEY_WALLET_INFO)
@@ -192,17 +204,21 @@
             dbWrapper.removeItem(dbWrapper.KEY_AUTH_PASSWORD)
               .then((authResult) => {
                 this.doClearAll()
-                this.$toast(toastMsg)
+                this.$toast('ウォレットをリセットしました')
                 this.$router.push({name: 'TopPage'})
               }).catch((err) => {
                 console.log(err)
-                toastMsg = 'ERROR：削除に失敗しました'
+                this.showDialog('ウォレットのリセット', err.error.message)
               })
           }).catch((err) => {
             console.log(err)
-            toastMsg = 'ERROR：削除に失敗しました'
+            this.showDialog('ウォレットのリセット', err.error.message)
           })
-        */
+      },
+      showDialog (title, message) {
+        this.dialogTitle = title
+        this.dialogMsg = message
+        this.isShowDialog = true
       },
       tapShowAccount () {
         this.isShowAccount = true

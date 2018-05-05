@@ -1,4 +1,4 @@
-import {UnconfirmedTransactionListener, ConfirmedTransactionListener,
+import {/* UnconfirmedTransactionListener, ConfirmedTransactionListener, */
   Account, AccountHttp, MosaicHttp, NEMLibrary, NetworkTypes, Address,
   SimpleWallet, Password, EncryptedPrivateKey, TimeWindow, Message, PlainMessage, XEM,
   TransactionHttp, TransferTransaction, AccountOwnedMosaicsService, MosaicId} from 'nem-library'
@@ -33,6 +33,25 @@ const nodes = [
   {protocol: 'https', domain: 'qora01.supernode.me', port: 7891},
   {protocol: 'https', domain: 'pegatennnag.supernode.me', port: 7891}
 ]
+/*
+const webScoketNodes = [
+  {protocol: 'https', domain: 'aqualife2.supernode.me', port: 7779},
+  {protocol: 'https', domain: 'aqualife3.supernode.me', port: 7779},
+  // {protocol: 'https', domain: 'beny.supernode.me', port: 7891}, 調子悪い？
+  {protocol: 'https', domain: 'happy.supernode.me', port: 7779},
+  {protocol: 'https', domain: 'mnbhsgwbeta.supernode.me', port: 7779},
+  {protocol: 'https', domain: 'nemstrunk.supernode.me', port: 7779},
+  {protocol: 'https', domain: 'nemstrunk2.supernode.me', port: 7779},
+  {protocol: 'https', domain: 'nsm.supernode.me', port: 7779},
+  {protocol: 'https', domain: 'kohkei.supernode.me', port: 7779},
+  {protocol: 'https', domain: 'mttsukuba.supernode.me', port: 7779},
+  {protocol: 'https', domain: 'strategic-trader-1.supernode.me', port: 7779},
+  {protocol: 'https', domain: 'strategic-trader-2.supernode.me', port: 7779},
+  {protocol: 'https', domain: 'shibuya.supernode.me', port: 7779},
+  {protocol: 'https', domain: 'qora01.supernode.me', port: 7779},
+  {protocol: 'https', domain: 'pegatennnag.supernode.me', port: 7779}
+]
+*/
 // Using custom NIS Node
 const accountHttp = new AccountHttp(nodes)
 const mosaicHttp = new MosaicHttp(nodes)
@@ -104,34 +123,6 @@ exports.getUnconfirmedTransaction = (addr) => {
     const address = new Address(addr)
     accountHttp.unconfirmedTransactions(address).subscribe(
       unconfirmedTransaction => { resolve(unconfirmedTransaction) },
-      error => { reject(error) }
-    )
-  })
-  return promise
-}
-
-// 未承認トランザクション取得.
-exports.getUncofirmedTransactionListener = (addr) => {
-  let promise = new Promise((resolve, reject) => {
-    console.log(addr)
-    const address = new Address(addr)
-    const listener = new UnconfirmedTransactionListener(nodes).given(address)
-    listener.subscribe(
-      x => { resolve(x) },
-      error => { reject(error) }
-    )
-  })
-  return promise
-}
-
-// 承認トランザクション取得.
-exports.getCofirmedTransactionListener = (addr) => {
-  let promise = new Promise((resolve, reject) => {
-    console.log(addr)
-    const address = new Address(addr)
-    const listener = new ConfirmedTransactionListener(nodes).given(address)
-    listener.subscribe(
-      x => { resolve(x) },
       error => { reject(error) }
     )
   })

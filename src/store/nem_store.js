@@ -1,4 +1,5 @@
 import nemWrapper from '@/js/nem_wrapper'
+import nemSDK from 'nem-sdk'
 
 // テスト用にLCNEMを採用
 const MOSAIC_FEST = { namespaceId: 'lc', name: 'jpy' }
@@ -13,6 +14,7 @@ export default {
     festBalance: 0,
     mosaics: [],
     transaction: [],
+    transactionStatus: 'none',
     targetMosaicNamespace: MOSAIC_FEST
   },
   getters: {
@@ -24,42 +26,44 @@ export default {
     festMosaic: state => state.festMosaic,
     mosaics: state => state.mosaics,
     transaction: state => state.transaction,
+    transactionStatus: state => state.transactionStatus,
     targetMosaicNamespace: state => state.targetMosaicNamespace
   },
   mutations: {
     setWalletItem (state, value) {
-      console.log('setWalletItem: ' + value)
+      console.log('setWalletItem', value)
       state.walletItem = value
     },
     setAddress (state, value) {
-      console.log('setAddress: ' + value)
+      console.log('setAddress', value)
       state.address = value
     },
     setPairKey (state, value) {
-      console.log('setPairKey: ' + value)
+      console.log('setPairKey', value)
       state.pairKey = value
     },
     setNemBalance (state, value) {
-      console.log('setNemBalance: ' + value)
+      console.log('setNemBalance', value)
       state.nemBalance = value
     },
     setFestBalance (state, value) {
-      console.log('setFestBalance: ' + value)
+      console.log('setFestBalance', value)
       state.festBalance = value
     },
     setMosaics (state, value) {
-      console.log('setMosaics:')
-      console.log(value)
+      console.log('setMosaics', value)
       state.mosaics = value
     },
     setTransactions (state, value) {
-      console.log('setTransactions:')
-      console.log(value)
+      console.log('setTransactions', value)
       state.transaction = value
     },
+    setTransactionStatus (state, value) {
+      console.log('setTransactionStatus', value)
+      state.transactionStatus = value
+    },
     setTargetMosaicNamespace (state, value) {
-      console.log('setTargetMosaicNamespace:')
-      console.log(value)
+      console.log('setTargetMosaicNamespace', value)
       state.targetMosaicNamespace = value
     }
   },
@@ -116,13 +120,56 @@ export default {
           transaction = allResult
           return nemWrapper.getUnconfirmedTransaction(address)
         }).then((unResult) => {
-          console.log('getUnconfirmedTransaction')
-          console.log(unResult)
+          console.log('getUnconfirmedTransaction', unResult)
           transaction = unResult.concat(transaction)
           commit('setTransactions', transaction)
         }).catch((err) => {
           console.error(err)
         })
+    },
+    doObserveTransaction ({ dispatch, commit, getters }) {
+      if (getters.address.length !== 0) {
+        let address = getters.address
+        console.log('doObserveTransaction', address)
+        let node = 'https://aqualife1.supernode.me'
+        let port = '7779'
+        let endpoint = nemSDK.model.objects.create('endpoint')(node, port)
+        let connector = nemSDK.com.websockets.connector.create(endpoint, address)
+        connector.connect().then(() => {
+          console.log('Websocket connected')
+          // ソケット受信.
+          nemSDK.com.websockets.subscribe.account.data(connector, res => {
+            console.log('data', res)
+            dispatch('doUpdateNemBalance')
+            dispatch('doUpdateMosaicsBalance')
+          })
+          nemSDK.com.websockets.subscribe.account.transactions.recent(connector, res => {
+            console.log('recent', res)
+            dispatch('doUpdateTransaction')
+          })
+          nemSDK.com.websockets.subscribe.account.transactions.unconfirmed(connector, res => {
+            console.log('unconfirmed', res)
+            dispatch('doTransactionStatus', 'unconfirmed')
+            dispatch('doUpdateTransaction')
+          })
+          nemSDK.com.websockets.subscribe.account.transactions.confirmed(connector, res => {
+            console.log('confirmed', res)
+            dispatch('doTransactionStatus', 'confirmed')
+            dispatch('doUpdateTransaction')
+          })
+          // リクエスト必須.
+          nemSDK.com.websockets.requests.account.data(connector)
+          nemSDK.com.websockets.requests.account.transactions.recent(connector)
+          nemSDK.com.websockets.requests.account.mosaics.definitions(connector)
+          nemSDK.com.websockets.requests.account.mosaics.owned(connector)
+          nemSDK.com.websockets.requests.account.namespaces.owned(connector)
+        }).catch((err) => {
+          console.error('doObserveTransaction', err)
+        })
+      }
+    },
+    doTransactionStatus ({ commit, getters }, value) {
+      commit('setTransactionStatus', value)
     },
     doClearAll ({ commit, getters }) {
       commit('setWalletItem', null)
