@@ -9,6 +9,7 @@ import colors from 'vuetify/es5/util/colors'
 import VueQriously from 'vue-qriously'
 import 'vue2-toast/lib/toast.css'
 import Toast from 'vue2-toast'
+import VueClipboard from 'vue-clipboard2'
 // import Toasted from 'vue-toasted'
 // Page
 import TopPage from '@/pages/TopPage'
@@ -33,6 +34,7 @@ Vue.use(Toast, {
   wordWrap: true,
   width: '280px'
 })
+Vue.use(VueClipboard)
 
 export default new Router({
   routes: [

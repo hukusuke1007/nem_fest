@@ -36,19 +36,19 @@
               <v-card-text>
                 {{ address }}
               </v-card-text>
-              <v-btn color="primary" class="btnLarge" large block @click="tapCopy">自分のアドレスをコピー</v-btn>
+              <v-btn color="primary"
+                class="btnLarge"
+                v-clipboard:copy="address"
+                v-clipboard:success="onCopy"
+                v-clipboard:error="onError"
+                large block
+              >自分のアドレスをコピー</v-btn>
             </v-flex>
             <v-btn class="blue--text" flat large block @click="close">ダッシュボードへ</v-btn>
           </v-layout>
         </div>
         </v-card>
       </v-flex>
-
-      <!-- ダイアログ -->
-      <DialogConfirm v-bind:dialogVal="isShowDialog"
-                     v-bind:titleVal="dialogTitle"
-                     v-bind:messageVal="dialogMsg"
-                     v-on:dialog-confirm-event-tap-positive="tapDialogConfirm"></DialogConfirm>
     </v-container>
   </v-card>
   </v-dialog>
@@ -56,18 +56,14 @@
 
 <script>
   import nemWrapper from '@/js/nem_wrapper'
-  import DialogConfirm from '@/components/DialogConfirm'
   import { mapGetters, mapActions } from 'vuex'
+
   export default {
     data: () => ({
       dialog: false,
-      isShowDialog: false,
-      dialogTitle: '',
-      dialogMsg: '',
       qrValue: ''
     }),
     components: {
-      DialogConfirm
     },
     computed: {
       ...mapGetters('Auth', ['isAuth', 'authPassword']),
@@ -93,25 +89,11 @@
       reloadItem () {
         this.qrValue = nemWrapper.getJSONInvoiceForQRcode(2, 2, 'nem_fest', this.address, 0, '')
       },
-      tapCopy () {
-        this.copyText(this.address)
-        this.showDialog()
+      onCopy (e) {
+        this.$toast('コピーしました')
       },
-      copyText (text) {
-        let ta = document.createElement('textarea')
-        ta.value = text
-        document.body.appendChild(ta)
-        ta.select()
-        document.execCommand('copy')
-        ta.parentElement.removeChild(ta)
-      },
-      showDialog () {
-        this.dialogTitle = '送金先アドレス'
-        this.dialogMsg = 'コピーしました'
-        this.isShowDialog = true
-      },
-      tapDialogConfirm () {
-        this.isShowDialog = false
+      onError (e) {
+        this.$toast('コピーに失敗しました')
       },
       close () {
         this.$emit('dialog-wallet-account-close', 'close')
