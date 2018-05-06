@@ -39,7 +39,7 @@ export default {
       state.address = value
     },
     setPairKey (state, value) {
-      console.log('setPairKey', value)
+      // console.log('setPairKey', value)
       state.pairKey = value
     },
     setNemBalance (state, value) {
@@ -102,6 +102,8 @@ export default {
 
               if ((mosaic.namespaceId === MOSAIC_FEST.namespaceId) && (mosaic.name === MOSAIC_FEST.name)) {
                 commit('setFestBalance', mosaic.amount)
+              } else {
+                commit('setFestBalance', 0)
               }
             })
             commit('setMosaics', mosaics)

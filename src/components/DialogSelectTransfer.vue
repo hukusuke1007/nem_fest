@@ -31,9 +31,9 @@
               </v-card-text>
             </v-card>
             <v-flex>
-              <v-btn color="primary" class="btnMedium" large @click="tapSendNem">xemを送る</v-btn>
-              <v-btn color="primary" class="btnMedium" large @click="tapSendMosaics">モザイクを送る</v-btn>
-              <v-btn color="grey lighten-4" class="btnLarge" large block @click="tapAllTransfer">すべて出金する</v-btn>
+              <v-btn color="primary" class="btnMedium" large @click="tapSend('nem')">xemを送る</v-btn>
+              <v-btn color="primary" class="btnMedium" large @click="tapSend('mosaics')">モザイクを送る</v-btn>
+              <v-btn color="grey lighten-4" class="btnLarge" large block @click="tapSend('all')">すべて出金する</v-btn>
             </v-flex>
             <v-btn class="blue--text" flat large block @click="close">ダッシュボードへ戻る</v-btn>
           </v-layout>
@@ -46,7 +46,6 @@
 </template>
 
 <script>
-  // import nemWrapper from '@/js/nem_wrapper'
   import { mapGetters, mapActions } from 'vuex'
   export default {
     data: () => ({
@@ -71,13 +70,8 @@
     },
     methods: {
       ...mapActions('Auth', ['doAuth', 'doAuthPassword']),
-      tapSendNem () {
-        this.$emit('dialog-select-transfer-select', 'nem')
-      },
-      tapSendMosaics () {
-        this.$emit('dialog-select-transfer-select', 'mosaics')
-      },
-      tapAllTransfer () {
+      tapSend (type) {
+        this.$emit('dialog-select-transfer-select', type)
       },
       close () {
         this.$emit('dialog-select-transfer-close', 'close')

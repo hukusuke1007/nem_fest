@@ -91,7 +91,8 @@
       senderItem: {
         address: '',
         amount: 0,
-        message: ''
+        message: '',
+        mosaics: []
       },
       selectBtn: '',
       transactionType: '',
@@ -196,15 +197,13 @@
         }
       },
       resetWallet () {
-        this.$toast('リセットしました')
         this.doAuth(false)
         this.doAuthPassword('')
         dbWrapper.removeItem(dbWrapper.KEY_WALLET_INFO)
           .then((walletResult) => {
             dbWrapper.removeItem(dbWrapper.KEY_AUTH_PASSWORD)
               .then((authResult) => {
-                this.doClearAll()
-                this.$toast('ウォレットをリセットしました')
+                this.$toast('リセットしました')
                 this.$router.push({name: 'TopPage'})
               }).catch((err) => {
                 console.log(err)

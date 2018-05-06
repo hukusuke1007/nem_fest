@@ -22,8 +22,8 @@ const nodes = [
   // {protocol: 'https', domain: 'beny.supernode.me', port: 7891}, 調子悪い？
   {protocol: 'https', domain: 'happy.supernode.me', port: 7891},
   {protocol: 'https', domain: 'mnbhsgwbeta.supernode.me', port: 7891},
-  {protocol: 'https', domain: 'nemstrunk.supernode.me', port: 7891},
-  {protocol: 'https', domain: 'nemstrunk2.supernode.me', port: 7891},
+  // {protocol: 'https', domain: 'nemstrunk.supernode.me', port: 7891}, 調子悪い？
+  // {protocol: 'https', domain: 'nemstrunk2.supernode.me', port: 7891}, 調子悪い？
   {protocol: 'https', domain: 'nsm.supernode.me', port: 7891},
   {protocol: 'https', domain: 'kohkei.supernode.me', port: 7891},
   {protocol: 'https', domain: 'mttsukuba.supernode.me', port: 7891},
@@ -213,7 +213,9 @@ exports.getFeeTransferXem = (senderAddr, amount, message) => {
     xem,
     PlainMessage.create(message)
   )
-  return tx.fee / NEM_UNIT
+  let result = tx.fee / NEM_UNIT
+  console.log('xemFee', result)
+  return result
 }
 
 // モザイク送信の手数料を取得.
@@ -227,11 +229,11 @@ exports.getFeeTransferMosaics = (senderAddr, mosaicData, message) => {
     let xemQuantity
     mosaicData.forEach((element) => {
       let data = {}
-      if ((element.namespace === 'nem') && (element.mosaic === 'xem')) {
+      if ((element.namespaceId === 'nem') && (element.name === 'xem')) {
         isXEM = true
         xemQuantity = element.quantity
       } else {
-        data.mosaic = new MosaicId(element.namespace, element.mosaic)
+        data.mosaic = new MosaicId(element.namespaceId, element.name)
         data.quantity = element.quantity
         dataList.push(data)
       }
@@ -265,7 +267,11 @@ exports.getFeeTransferMosaics = (senderAddr, mosaicData, message) => {
           PlainMessage.create(message)
         ))
         .subscribe(
-          transaction => { resolve(transaction.fee / NEM_UNIT) },
+          transaction => {
+            let result = transaction.fee / NEM_UNIT
+            console.log('mosaicsFee', result)
+            resolve(result)
+          },
           error => { reject(error) }
         )
     }
@@ -306,11 +312,11 @@ exports.transferTransactionMosaics = (senderAddr, mosaicData, message, privateKe
     let xemQuantity
     mosaicData.forEach((element) => {
       let data = {}
-      if ((element.namespace === 'nem') && (element.mosaic === 'xem')) {
+      if ((element.namespaceId === 'nem') && (element.name === 'xem')) {
         isXEM = true
         xemQuantity = element.quantity
       } else {
-        data.mosaic = new MosaicId(element.namespace, element.mosaic)
+        data.mosaic = new MosaicId(element.namespaceId, element.name)
         data.quantity = element.quantity
         dataList.push(data)
       }

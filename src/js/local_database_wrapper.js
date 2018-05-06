@@ -2,9 +2,9 @@ import localForage from 'localforage'
 localForage.setDriver(localForage.INDEXEDDB)
 
 // データーベース
-const KEY_WALLET_INFO = 'key_wallet_info'
+const KEY_WALLET_INFO = 'key_wallet_info_nem_fest'
 const KEY_INVOICE = 'key_invoice'
-const KEY_AUTH_PASSWORD = 'key_auth_password'
+const KEY_AUTH_PASSWORD = 'key_auth_password_nem_fest'
 
 // 値のkey.
 const VALUE_PRIMARY_ID = 'id'

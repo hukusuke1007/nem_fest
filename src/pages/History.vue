@@ -88,7 +88,7 @@
           console.log('transactionStatus: unconfirmed')
           this.$toast('トランザクション承認中...')
         } else if (val === 'confirmed') {
-          this.$toast('トランザクションが承認されました')
+          this.$toast('トランザクションが承認されました。反映されない場合は更新ボタンを押してください。')
           this.doTransactionStatus('none')
         }
       }
@@ -98,10 +98,7 @@
       ...mapActions('Top', ['doTitle']),
       ...mapActions('Nem', ['doAddress', 'doUpdateTransaction', 'doTransactionStatus']),
       reloadItem () {
-        // this.doAuth(true) // 削除予定(テスト用)
-        // this.doAddress('NCQVG5KPMB6VHOBSHRUM2D3ZENL4F4Z6MVUNTFS3') // 削除予定(テスト用)
         this.doUpdateTransaction()
-        // this.setItemsForTransaction(this.transaction)
       },
       setItemsForTransaction (transactions) {
         this.items = []

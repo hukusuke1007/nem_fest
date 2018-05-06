@@ -36,13 +36,19 @@
               <v-card-text>
                 {{ address }}
               </v-card-text>
-              <v-btn color="primary" class="btnLarge" large block @click="tapCopy">自分のアドレスへコピー</v-btn>
+              <v-btn color="primary" class="btnLarge" large block @click="tapCopy">自分のアドレスをコピー</v-btn>
             </v-flex>
             <v-btn class="blue--text" flat large block @click="close">ダッシュボードへ</v-btn>
           </v-layout>
         </div>
         </v-card>
       </v-flex>
+
+      <!-- ダイアログ -->
+      <DialogConfirm v-bind:dialogVal="isShowDialog"
+                     v-bind:titleVal="dialogTitle"
+                     v-bind:messageVal="dialogMsg"
+                     v-on:dialog-confirm-event-tap-positive="tapDialogConfirm"></DialogConfirm>
     </v-container>
   </v-card>
   </v-dialog>
@@ -50,13 +56,19 @@
 
 <script>
   import nemWrapper from '@/js/nem_wrapper'
+  import DialogConfirm from '@/components/DialogConfirm'
   import { mapGetters, mapActions } from 'vuex'
   export default {
     data: () => ({
       dialog: false,
-      // address: '',
+      isShowDialog: false,
+      dialogTitle: '',
+      dialogMsg: '',
       qrValue: ''
     }),
+    components: {
+      DialogConfirm
+    },
     computed: {
       ...mapGetters('Auth', ['isAuth', 'authPassword']),
       ...mapGetters('Nem', ['address', 'pairKey', 'nemBalance', 'festBalance'])
@@ -82,8 +94,8 @@
         this.qrValue = nemWrapper.getJSONInvoiceForQRcode(2, 2, 'nem_fest', this.address, 0, '')
       },
       tapCopy () {
-        this.showToast()
         this.copyText(this.address)
+        this.showDialog()
       },
       copyText (text) {
         let ta = document.createElement('textarea')
@@ -93,9 +105,13 @@
         document.execCommand('copy')
         ta.parentElement.removeChild(ta)
       },
-      showToast () {
-        let toastMsg = 'コピーしました'
-        this.$toast(toastMsg)
+      showDialog () {
+        this.dialogTitle = '送金先アドレス'
+        this.dialogMsg = 'コピーしました'
+        this.isShowDialog = true
+      },
+      tapDialogConfirm () {
+        this.isShowDialog = false
       },
       close () {
         this.$emit('dialog-wallet-account-close', 'close')
