@@ -15,6 +15,7 @@ const NEM_UNIT = 1000000
 exports.PUBLICK_KEY = PUBLICK_KEY
 exports.PRIVATE_KEY = PRIVATE_KEY
 exports.NEM_UNIT = NEM_UNIT
+exports.PASSWORD = PASSWORD
 
 const nodes = [
   {protocol: 'https', domain: 'aqualife2.supernode.me', port: 7891},
@@ -159,11 +160,6 @@ exports.getMessageFromPlain = (hex) => {
 }
 
 // 公開鍵と秘密鍵を取得.
-exports.getPairKey = (account) => {
-  return this.getPairKey(account, PASSWORD)
-}
-
-// 公開鍵と秘密鍵を取得.
 exports.getPairKey = (account, pass) => {
   const address = new Address(account.address.value)
   const encryptedPrivateKey = new EncryptedPrivateKey(account.encryptedPrivateKey.encryptedKey, account.encryptedPrivateKey.iv)
@@ -180,14 +176,6 @@ exports.getPairKey = (account, pass) => {
 }
 
 // ウォレット作成.
-exports.createWallet = (name) => {
-  const password = new Password(PASSWORD)
-  const account = SimpleWallet.create(name, password)
-  console.log(account)
-  return account
-}
-
-// ウォレット作成.
 exports.createWallet = (name, pass) => {
   const password = new Password(pass)
   const account = SimpleWallet.create(name, password)
@@ -196,8 +184,8 @@ exports.createWallet = (name, pass) => {
 }
 
 // 秘密鍵からウォレット作成.
-exports.createWalletWithPrivateKey = (name, privateKey) => {
-  const password = new Password(PASSWORD)
+exports.createWalletWithPrivateKey = (name, pass, privateKey) => {
+  const password = new Password(pass)
   const account = SimpleWallet.createWithPrivateKey(name, password, privateKey)
   console.log(account)
   return account
