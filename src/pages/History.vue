@@ -3,6 +3,10 @@
   <v-card>
     <v-list two-line>
       <div v-if="isAuth">
+        <v-card-actions>
+          <span class="grey--text">履歴 {{ items.length }}件</span><v-spacer></v-spacer>
+          <v-btn fab small flat @click="reloadItem" :loading="isLoading"><v-icon>cached</v-icon></v-btn>
+        </v-card-actions>
         <template v-for="(item, index) in items">
           <v-list-tile ripple :key="index" @click="tapItem(index)">
             <v-list-tile-content v-show="item.type === `TransferTransaction`">
@@ -23,6 +27,9 @@
           </v-list-tile>
           <v-divider v-if="index + 1 < items.length" :key="`divider-${index}`"></v-divider>
         </template>
+      </div>
+      <div v-else>
+        <v-card-text><div v-html="descriptionNotAuth" style="text-align: left;"></div></v-card-text>        
       </div>
     </v-list>
 
@@ -50,7 +57,6 @@
   export default {
     name: 'history',
     data: () => ({
-      // header: '送金履歴一覧 (最大100件)',
       dialogtitle: '',
       isShowDialog: false,
       isShowHistoryDetail: false,
@@ -63,8 +69,9 @@
       DialogHistoryDetail
     },
     computed: {
+      ...mapGetters('Top', ['descriptionNotAuth']),
       ...mapGetters('Auth', ['isAuth', 'authPassword']),
-      ...mapGetters('Nem', ['address', 'nemBalance', 'festBalance', 'transaction', 'transactionStatus'])
+      ...mapGetters('Nem', ['address', 'nemBalance', 'festBalance', 'transaction', 'transactionStatus', 'isLoading'])
     },
     mounted () {
       this.doTitle('履歴')
@@ -165,6 +172,14 @@
             */
           }
         })
+
+        // 日付順にソート.
+        this.items.sort((a, b) => {
+          if (a.timeStamp > b.timeStamp) return -1
+          if (a.timeStamp < b.timeStamp) return 1
+          return 0
+        })
+
         // モザイク送金履歴を確認.
         this.items.map((element, index, array) => {
           if (element.mosaics && element.mosaics.length > 0) {

@@ -2,7 +2,7 @@ import nemWrapper from '@/js/nem_wrapper'
 import nemSDK from 'nem-sdk'
 
 // テスト用にLCNEMを採用
-const MOSAIC_FEST = { namespaceId: 'lc', name: 'jpy' }
+const MOSAIC_FEST = { namespaceId: 'nems', name: 'festcoin' }
 
 export default {
   namespaced: true,
@@ -15,7 +15,8 @@ export default {
     mosaics: [],
     transaction: [],
     transactionStatus: 'none',
-    targetMosaicNamespace: MOSAIC_FEST
+    targetMosaicNamespace: MOSAIC_FEST,
+    isLoading: false
   },
   getters: {
     walletItem: state => state.walletItem,
@@ -27,7 +28,8 @@ export default {
     mosaics: state => state.mosaics,
     transaction: state => state.transaction,
     transactionStatus: state => state.transactionStatus,
-    targetMosaicNamespace: state => state.targetMosaicNamespace
+    targetMosaicNamespace: state => state.targetMosaicNamespace,
+    isLoading: state => state.isLoading
   },
   mutations: {
     setWalletItem (state, value) {
@@ -65,29 +67,38 @@ export default {
     setTargetMosaicNamespace (state, value) {
       console.log('setTargetMosaicNamespace', value)
       state.targetMosaicNamespace = value
+    },
+    setIsLoading (state, value) {
+      console.log('setIsLoading', value)
+      state.isLoading = value
     }
   },
   actions: {
-    doUpdateNemBalance ({ commit, getters }) {
+    doUpdateNemBalance ({ dispatch, commit, getters }) {
       if ('publicKey' in getters.pairKey) {
+        dispatch('doIsLoading', true)
         nemWrapper.getAccountFromPublicKey(getters.pairKey.publicKey)
           .then((result) => {
             let value = result.balance.balance / nemWrapper.NEM_UNIT
             commit('setNemBalance', value)
+            dispatch('doIsLoading', false)
           }).catch((err) => {
             console.log(err)
+            dispatch('doIsLoading', false)
           })
       } else {
         console.log('nothing publicKey')
       }
     },
-    doUpdateMosaicsBalance ({ commit, getters }) {
+    doUpdateMosaicsBalance ({ dispatch, commit, getters }) {
       console.log('doUpdateMosaicsBalance')
       let mosaics = []
       if (getters.address.length > 0) {
+        dispatch('doIsLoading', true)
         nemWrapper.getMosaics(getters.address)
           .then((result) => {
             console.log('get Mosaics')
+            let targetMosaicAmount = 0
             result.forEach((element) => {
               let mosaic = {}
               mosaic.text = element.mosaicId.namespaceId + ':' + element.mosaicId.name
@@ -101,22 +112,24 @@ export default {
               mosaics.push(mosaic)
 
               if ((mosaic.namespaceId === MOSAIC_FEST.namespaceId) && (mosaic.name === MOSAIC_FEST.name)) {
-                commit('setFestBalance', mosaic.amount)
-              } else {
-                commit('setFestBalance', 0)
+                targetMosaicAmount = mosaic.amount
               }
             })
+            commit('setFestBalance', targetMosaicAmount)
             commit('setMosaics', mosaics)
+            dispatch('doIsLoading', false)
           }).catch((err) => {
             console.log('get_mosaic_error: ' + err)
+            dispatch('doIsLoading', false)
           })
       } else {
         console.log('nothing address')
       }
     },
-    doUpdateTransaction ({ commit, getters }) {
+    doUpdateTransaction ({ dispatch, commit, getters }) {
       let address = getters.address
       let transaction = []
+      dispatch('doIsLoading', true)
       nemWrapper.getTransaction(address, 100, undefined, undefined)
         .then((allResult) => {
           transaction = allResult
@@ -125,8 +138,10 @@ export default {
           console.log('getUnconfirmedTransaction', unResult)
           transaction = unResult.concat(transaction)
           commit('setTransactions', transaction)
+          dispatch('doIsLoading', false)
         }).catch((err) => {
           console.error(err)
+          dispatch('doIsLoading', false)
         })
     },
     doObserveTransaction ({ dispatch, commit, getters }) {
@@ -201,6 +216,9 @@ export default {
     },
     doTargetMosaicNamespace ({ commit, getters }, value) {
       commit('setTargetMosaicNamespace', value)
+    },
+    doIsLoading ({ commit, getters }, value) {
+      commit('setIsLoading', value)
     }
   }
 }

@@ -13,20 +13,29 @@ Vue.use(Vuex)
 const Top = {
   namespaced: true,
   state: {
-    title: 'NEM fest'
+    title: 'NEM fest',
+    descriptionNotAuth: '本人確認できていません。<br>TOPページで認証してください。'
   },
   getters: {
-    title: state => state.title
+    title: state => state.title,
+    descriptionNotAuth: state => state.descriptionNotAuth
   },
   mutations: {
     setTitle (state, value) {
-      console.log('setTitle' + value)
+      console.log('setTitle', value)
       state.title = value
+    },
+    setDescriptionNotAuth (state, value) {
+      console.log('setDescriptionNotAuth', value)
+      state.descriptionNotAuth = value
     }
   },
   actions: {
     doTitle ({ commit, getters }, value) {
       commit('setTitle', value)
+    },
+    doDescriptionNotAuth ({ commit, getters }, value) {
+      commit('setDescriptionNotAuth', value)
     }
   }
 }

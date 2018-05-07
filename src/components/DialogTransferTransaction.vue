@@ -241,22 +241,26 @@
       ...mapActions('Auth', ['doAuth', 'doAuthPassword']),
       tapSend () {
         if (this.$refs.form.validate()) {
-          console.log('submit')
+          console.log('submit remainBalance', this.remainBalance, this.senderItem.address)
           this.senderItem.address = this.senderItem.address.replace(/-/g, '')
-          console.log(this.senderItem.address)
-          // エラー処理必要.
-          if (this.remainBalance < 0) {
-            let message = '残高が足りません'
-            this.$toast(message)
-          } else {
-            if (this.transactionType === 'nem') {
+          if (this.transactionType === 'nem') {
+            if (this.remainBalance < 0) {
+              let message = '残高が足りません'
+              this.$toast(message)
+            } else {
               this.dialogPosNegMsg = 'NEMを送金しますか？<br><br>' +
                 '数量:<br>' + this.senderItem.amount + ' xem' + '<br>' +
                 '手数量:<br>' + this.fee + ' xem' + '<br>' +
                 '合計:<br>' + this.totalAmount + ' xem' + '<br><br>' +
                 '送金先:<br>' + this.senderItem.address + '<br><br>' +
                 'メッセージ:<br>' + this.senderItem.message
-            } else if (this.transactionType === 'mosaics') {
+              this.isShowDialogPosNeg = true
+            }
+          } else if (this.transactionType === 'mosaics') {
+            if ((this.remainBalance < 0) || (this.nemBalance < this.fee)) {
+              let message = '残高が足りません。'
+              this.$toast(message)
+            } else {
               let target = this.targetMosaicNamespace
               let targetMosaic = this.getTargetMosaic(target.namespaceId, target.name)
               let name = targetMosaic.other[0].name
@@ -266,8 +270,18 @@
                 '手数量:<br>' + this.fee + ' xem' + '<br>' +
                 '送金先:<br>' + this.senderItem.address + '<br><br>' +
                 'メッセージ:<br>' + this.senderItem.message
-            } else if (this.transactionType === 'all') {
-              this.updateNemQuantity() // 手数料を再計算.
+              this.isShowDialogPosNeg = true
+            }
+          } else if (this.transactionType === 'all') {
+            this.updateNemQuantity() // 手数料を再計算.
+            let isError = false
+            this.senderItem.mosaics.forEach((element) => {
+              if (element.remainBalance < 0) { isError = true }
+            })
+            if (isError === true) {
+              let message = '残高が足りません。'
+              this.$toast(message)
+            } else {
               let mosaicsMsg = ''
               this.senderItem.mosaics.forEach((element) => {
                 mosaicsMsg += '数量:<br>' + element.quantity + ' ' + element.name + '<br>'
@@ -277,8 +291,8 @@
                 '手数量:<br>' + this.fee + ' xem' + '<br>' +
                 '送金先:<br>' + this.senderItem.address + '<br><br>' +
                 'メッセージ:<br>' + this.senderItem.message
+              this.isShowDialogPosNeg = true
             }
-            this.isShowDialogPosNeg = true
           }
         }
       },

@@ -8,6 +8,20 @@
       <v-card>
        <v-layout column wrap>
           <v-flex v-if="isAuth">
+            <v-card-actions>
+             <v-card-title class="grey--text">残高</v-card-title>
+             <v-spacer></v-spacer>
+             <v-menu offset-y>
+             <v-btn slot="activator" fab small flat><v-icon>view_module</v-icon></v-btn>
+              <v-list>
+                <v-subheader>保有モザイク一覧</v-subheader>
+                <v-list-tile v-for="mosaic in mosaics" :key="mosaic.text" @click="">
+                  <v-list-tile-title>{{ mosaic.amount }} {{ mosaic.text }}</v-list-tile-title>
+                </v-list-tile>
+              </v-list>
+            </v-menu>
+            <v-btn fab small flat @click="getWallet" :loading="isLoading"><v-icon>cached</v-icon></v-btn>
+            </v-card-actions>
             <div style="text-align: center;">xem<font size="5" style="margin-left: 8px;">{{ nemBalance }}</font></div>
             <div style="text-align: center;">fest<font size="5" style="margin-left: 8px;">{{ festBalance }}</font></div>
             <v-flex>
@@ -20,7 +34,7 @@
             </v-flex>
           </v-flex>
           <v-flex v-else>
-            <v-card-text><div v-html="description" style="text-align: left;"></div></v-card-text>
+            <v-card-text><div v-html="descriptionNotAuth" style="text-align: left;"></div></v-card-text>
           </v-flex>               
         
       </v-layout>
@@ -108,8 +122,7 @@
       dialogPosNegTitle: '',
       dialogPosNegTitleMessage: '',
       dialogPosMsg: '',
-      dialogNegMsg: '',
-      description: '本人確認できていません。<br>TOPページで認証してください。'
+      dialogNegMsg: ''
     }),
     components: {
       DialogWalletAccount,
@@ -121,8 +134,9 @@
       DialogPositiveNegative
     },
     computed: {
+      ...mapGetters('Top', ['descriptionNotAuth']),
       ...mapGetters('Auth', ['isAuth', 'authPassword']),
-      ...mapGetters('Nem', ['walletItem', 'address', 'pairKey', 'nemBalance', 'festBalance', 'mosaics', 'transactionStatus'])
+      ...mapGetters('Nem', ['walletItem', 'address', 'pairKey', 'nemBalance', 'festBalance', 'mosaics', 'transactionStatus', 'isLoading'])
       /*
       ...mapGetters('Nem', {
         stWalletItem: 'walletItem',
