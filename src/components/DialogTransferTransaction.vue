@@ -207,28 +207,30 @@
       dialogVal (val) {
         this.dialog = val
         this.setTransferMosaics()
+        if (val === true) {
+          if (this.transactionType === 'nem') {
+            this.title = 'NEMを送金する'
+            this.targetUnit = 'xem'
+          } else if (this.transactionType === 'mosaics') {
+            this.title = 'モザイクを送金する'
+            this.targetUnit = this.targetMosaicNamespace.name
+          } else if (this.transactionType === 'all') {
+            this.title = 'すべて出金する'
+            this.setAllamount()
+          }
+        }
       },
       transactionType (val) {
         console.log('transactionType: ' + val)
-        if (val === 'nem') {
-          this.title = 'NEMを送金する'
-          this.targetUnit = 'xem'
-        } else if (val === 'mosaics') {
-          this.title = 'モザイクを送金する'
-          this.targetUnit = this.targetMosaicNamespace.name
-        } else if (val === 'all') {
-          this.title = 'すべて出金する'
-          this.setAllamount()
-        }
       },
       nemBalance (val) {
-        this.update(val)
+        this.update()
       },
       'senderItem': {
         handler: function (val, oldVal) {
           console.log('senderItem watch 1', 'newval: ', val, '   oldVal:', oldVal)
           if (val.address.length >= 40) {
-            this.update(val)
+            this.update()
           } else {
             this.fee = 0
             this.totalAmount = 0
@@ -415,7 +417,7 @@
         console.log('getTargetMosaic', targetMosaic)
         return targetMosaic
       },
-      update (val) {
+      update () {
         let target = this.targetMosaicNamespace
         // 残高計算
         if (this.transactionType === 'nem') {
