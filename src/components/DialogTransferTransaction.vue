@@ -210,9 +210,6 @@
       },
       transactionType (val) {
         console.log('transactionType: ' + val)
-        this.senderItem.address = ''
-        this.senderItem.amount = 0
-        this.senderItem.message = ''
         if (val === 'nem') {
           this.title = 'NEMを送金する'
           this.targetUnit = 'xem'
@@ -232,6 +229,10 @@
           console.log('senderItem watch 1', 'newval: ', val, '   oldVal:', oldVal)
           if (val.address.length >= 40) {
             this.update(val)
+          } else {
+            this.fee = 0
+            this.totalAmount = 0
+            this.remainBalance = 0
           }
         },
         deep: true
@@ -431,12 +432,14 @@
           this.totalAmount = this.senderItem.amount
         } else if (this.transactionType === 'all') {
           // すべて出金
-          val.mosaics.map((element) => {
-            let n = element.divisibility
-            element.remainBalance = Math.floor((element.amount - element.quantity) * Math.pow(10, n)) / Math.pow(10, n)
-            console.log('mosaic.remainBalance', element.amount, element.quantity)
-            return element
-          })
+          if (this.senderItem.mosaics.length > 0) {
+            this.senderItem.mosaics.map((element) => {
+              let n = element.divisibility
+              element.remainBalance = Math.floor((element.amount - element.quantity) * Math.pow(10, n)) / Math.pow(10, n)
+              console.log('mosaic.remainBalance', element.amount, element.quantity)
+              return element
+            })
+          }
         }
 
         // 手数料を計算.

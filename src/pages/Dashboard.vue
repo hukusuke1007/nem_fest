@@ -150,8 +150,8 @@
     },
     mounted () {
       // デバックのため認証状態にする
-      this.doAuth(true)
-      this.doAuthPassword('aaaaaaaa')
+      // this.doAuth(true)
+      // this.doAuthPassword('aaaaaaaa')
       this.doTitle('ダッシュボード')
       if (this.isAuth === true) {
         this.getWallet()
@@ -194,6 +194,7 @@
         if ((content !== null) && ('data' in content)) {
           console.log(content)
           // this.name = content.data.name
+          this.transactionType = 'nem'
           this.senderItem.address = content.data.addr
           if ('amount' in content.data) {
             this.senderItem.amount = Number(content.data.amount) / Math.pow(10, 6)
@@ -206,7 +207,6 @@
             this.senderItem.message = ''
           }
           this.isShowQRreader = false
-          this.transactionType = 'nem'
           this.isShowTransfer = true
         }
       },
@@ -258,6 +258,9 @@
       },
       tapSelectTransSelect (select) {
         console.log(select)
+        this.senderItem.address = ''
+        this.senderItem.amount = 0
+        this.senderItem.message = ''
         this.transactionType = select
         this.isShowTransfer = true
       },

@@ -120,10 +120,10 @@ const webpackConfig = merge(baseWebpackConfig, {
       clientsClaim: true,
       runtimeCaching: [
       {
-         urlPattern: /.*api.*/,
+         urlPattern: '/',
          handler: 'networkFirst',
          options: {
-           cacheName: 'api',
+           cacheName: 'page',
            expiration: {
              maxAgeSeconds: 60 * 60 * 24,
              maxEntries: 10
