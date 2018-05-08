@@ -168,7 +168,7 @@
         if (val === 'unconfirmed') {
           this.$toast('トランザクション承認中...')
         } else if (val === 'confirmed') {
-          this.$toast('トランザクションが承認されました')
+          this.$toast('トランザクションが承認されました。反映されない場合は更新ボタンを押してください。')
           this.doTransactionStatus('none')
         }
       }

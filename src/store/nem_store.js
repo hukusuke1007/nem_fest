@@ -157,8 +157,11 @@ export default {
           // ソケット受信.
           nemSDK.com.websockets.subscribe.account.data(connector, res => {
             console.log('data', res)
-            dispatch('doUpdateNemBalance')
-            dispatch('doUpdateMosaicsBalance')
+            setTimeout(() => {
+              console.log('setTimeout account')
+              dispatch('doUpdateNemBalance')
+              dispatch('doUpdateMosaicsBalance')
+            }, 1000)
           })
           nemSDK.com.websockets.subscribe.account.transactions.recent(connector, res => {
             console.log('recent', res)
@@ -172,7 +175,10 @@ export default {
           nemSDK.com.websockets.subscribe.account.transactions.confirmed(connector, res => {
             console.log('confirmed', res)
             dispatch('doTransactionStatus', 'confirmed')
-            dispatch('doUpdateTransaction')
+            setTimeout(() => {
+              console.log('setTimeout confirmed')
+              dispatch('doUpdateTransaction')
+            }, 1000)
           })
           // リクエスト必須.
           nemSDK.com.websockets.requests.account.data(connector)
