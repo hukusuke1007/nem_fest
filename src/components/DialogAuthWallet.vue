@@ -28,6 +28,8 @@
                       :type="hiddenPass ? 'number' : 'password'"
                       required
                       placeholder=""
+                      pattern="[0-9]*"
+                      inputmode="numeric"
                     ></v-text-field>
                     <v-text-field
                       label="確認用パスワードを入力"
@@ -36,9 +38,11 @@
                       min="4"
                       :append-icon="hiddenCheckPass ? 'visibility' : 'visibility_off'"
                       :append-icon-cb="() => (hiddenCheckPass = !hiddenCheckPass)"
-                      :type="hiddenCheckPass ? 'password' : 'number'"
+                      :type="hiddenCheckPass ? 'number' : 'password'"
                       required
                       placeholder=""
+                      pattern="[0-9]*"
+                      inputmode="numeric"
                     ></v-text-field>
               </v-form>
             </v-flex>
@@ -150,17 +154,18 @@
       },
       createData () {
         this.dialogTitle = 'ウォレット作成'
-        let encPass = cryptoWrapper.encryptAES(this.password, this.password)
-        console.log(encPass)
+        let password = this.password + '0000' // NEM libraryの仕様により8文字以上にする.
+        let encPass = cryptoWrapper.encryptAES(password, password)
+        console.log(password, encPass)
         dbWrapper.setItem(dbWrapper.KEY_AUTH_PASSWORD, encPass)
           .then((result) => {
             let model = new ModelWalletNem()
-            model.account = nemWrapper.createWallet('nem_fest', this.password)
+            model.account = nemWrapper.createWallet('nem_fest', password)
             dbWrapper.setItem(dbWrapper.KEY_WALLET_INFO, model)
               .then((result) => {
                 console.log(result)
                 this.isError = false
-                this.setStateStore(true, this.password)
+                this.setStateStore(true, password)
                 this.dialogMessage = 'ウォレットを作成しました。'
                 this.isShowDialogConfirm = true
               }).catch((err) => {
@@ -205,9 +210,6 @@
           this.checkPassword()
         } else {
           if (this.password === this.comPassword) {
-            this.password = this.password + '0000' // NEM libraryの仕様により8文字以上にする.
-            this.comPassword = this.password
-            console.log(this.password)
             this.createData()
           } else {
             this.isError = true
