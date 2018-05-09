@@ -29,7 +29,6 @@
                       required
                       placeholder=""
                       pattern="[0-9]*"
-                      inputmode="numeric"
                     ></v-text-field>
                     <v-text-field
                       label="確認用パスワードを入力"
@@ -41,7 +40,6 @@
                       :type="hiddenCheckPass ? 'number' : 'password'"
                       required
                       placeholder=""
-                      pattern="[0-9]*"
                     ></v-text-field>
               </v-form>
             </v-flex>
@@ -59,7 +57,6 @@
                       required
                       placeholder=""
                       pattern="[0-9]*"
-                      inputmode="numeric"
                     ></v-text-field>
               </v-form>
             </v-flex>
