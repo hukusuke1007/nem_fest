@@ -40,6 +40,7 @@
                       :type="hiddenCheckPass ? 'number' : 'password'"
                       required
                       placeholder=""
+                      pattern="[0-9]*"
                     ></v-text-field>
               </v-form>
             </v-flex>
