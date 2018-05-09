@@ -22,23 +22,27 @@
                       label="新規パスワードを入力"
                       v-model="password"
                       :rules="[rules.passwordLimit, rules.passwordInput]"
-                      min="8"
+                      min="4"
                       :append-icon ="hiddenPass ? 'visibility' : 'visibility_off'"
                       :append-icon-cb="() => (hiddenPass = !hiddenPass)"
                       :type="hiddenPass ? 'password' : 'text'"
                       required
                       placeholder=""
+                      pattern="[0-9]*"
+                      inputmode="numeric"
                     ></v-text-field>
                     <v-text-field
                       label="確認用パスワードを入力"
                       v-model="comPassword"
                       :rules="[rules.passwordLimit, rules.passwordInput]"
-                      min="8"
+                      min="4"
                       :append-icon="hiddenCheckPass ? 'visibility' : 'visibility_off'"
                       :append-icon-cb="() => (hiddenCheckPass = !hiddenCheckPass)"
                       :type="hiddenCheckPass ? 'password' : 'text'"
                       required
                       placeholder=""
+                      pattern="[0-9]*"
+                      inputmode="numeric"
                     ></v-text-field>
               </v-form>
             </v-flex>
@@ -49,12 +53,14 @@
                       label="パスワードを入力"
                       v-model="password"
                       :rules="[rules.passwordLimit, rules.passwordInput]"
-                      min="8"
+                      min="4"
                       :append-icon="hiddenPass ? 'visibility' : 'visibility_off'"
                       :append-icon-cb="() => (hiddenPass = !hiddenPass)"
                       :type="hiddenPass ? 'password' : 'text'"
                       required
                       placeholder=""
+                      pattern="[0-9]*"
+                      inputmode="numeric"
                     ></v-text-field>
               </v-form>
             </v-flex>
@@ -97,10 +103,10 @@
       hiddenPass: true,
       hiddenCheckPass: true,
       rules: {
-        passwordLimit: (value) => (value && value.length >= 8) || 'パスワードは8文字以上です',
+        passwordLimit: (value) => (value && value.length >= 4) || 'パスワードは4文字以上です',
         passwordInput: (value) => {
-          const pattern = /^[a-zA-Z0-9-]+$/
-          return pattern.test(value) || '英数字を入力してください'
+          const pattern = /^[0-9]+$/
+          return pattern.test(value) || '数字を入力してください'
         }
       },
       isShowDialogConfirm: false,
@@ -177,11 +183,12 @@
         this.dialogTitle = 'パスワード'
         dbWrapper.getItem(dbWrapper.KEY_AUTH_PASSWORD)
           .then((result) => {
-            let decPass = cryptoWrapper.decryptAES(result, this.password)
+            let password = this.password + '0000' // NEM libraryの仕様により8文字以上にする.
+            let decPass = cryptoWrapper.decryptAES(result, password)
             console.log(decPass)
-            if (this.password === decPass) {
+            if (password === decPass) {
               this.isError = false
-              this.setStateStore(true, this.password)
+              this.setStateStore(true, password)
               this.clear()
               this.$emit('dialog-auth-wallet-notify', 'auth_success')
               this.$emit('dialog-auth-wallet-close', 'close')
@@ -202,6 +209,8 @@
           this.checkPassword()
         } else {
           if (this.password === this.comPassword) {
+            this.password = this.password + '0000' // NEM libraryの仕様により8文字以上にする.
+            this.comPassword = this.password
             console.log(this.password)
             this.createData()
           } else {
