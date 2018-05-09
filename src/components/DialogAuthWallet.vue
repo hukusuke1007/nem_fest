@@ -42,7 +42,6 @@
                       required
                       placeholder=""
                       pattern="[0-9]*"
-                      inputmode="numeric"
                     ></v-text-field>
               </v-form>
             </v-flex>
@@ -56,7 +55,7 @@
                       min="4"
                       :append-icon="hiddenPass ? 'visibility' : 'visibility_off'"
                       :append-icon-cb="() => (hiddenPass = !hiddenPass)"
-                      :type="hiddenPass ? 'password' : 'text'"
+                      :type="hiddenPass ? 'number' : 'password'"
                       required
                       placeholder=""
                       pattern="[0-9]*"
