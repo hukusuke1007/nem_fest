@@ -25,11 +25,9 @@
                       min="4"
                       :append-icon ="hiddenPass ? 'visibility' : 'visibility_off'"
                       :append-icon-cb="() => (hiddenPass = !hiddenPass)"
-                      :type="hiddenPass ? 'password' : 'text'"
+                      :type="hiddenPass ? 'number' : 'password'"
                       required
                       placeholder=""
-                      pattern="[0-9]*"
-                      inputmode="numeric"
                     ></v-text-field>
                     <v-text-field
                       label="確認用パスワードを入力"
@@ -38,11 +36,9 @@
                       min="4"
                       :append-icon="hiddenCheckPass ? 'visibility' : 'visibility_off'"
                       :append-icon-cb="() => (hiddenCheckPass = !hiddenCheckPass)"
-                      :type="hiddenCheckPass ? 'password' : 'text'"
+                      :type="hiddenCheckPass ? 'password' : 'number'"
                       required
                       placeholder=""
-                      pattern="[0-9]*"
-                      inputmode="numeric"
                     ></v-text-field>
               </v-form>
             </v-flex>
