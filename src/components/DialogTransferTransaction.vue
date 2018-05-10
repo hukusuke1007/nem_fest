@@ -137,7 +137,7 @@
                  v-on:dialog-confirm-event-tap-positive="tapDialogConfirm"></DialogConfirm>
   <!-- プログレス -->
   <ProgressCircular v-bind:isShowVal="isShowProgress"></ProgressCircular>
-  
+
   </v-dialog>
 </template>
 
@@ -180,7 +180,7 @@
     }),
     computed: {
       ...mapGetters('Auth', ['isAuth', 'authPassword']),
-      ...mapGetters('Nem', ['pairKey', 'nemBalance', 'festBalance', 'mosaics', 'targetMosaicNamespace'])
+      ...mapGetters('Nem', ['pairKey', 'nemBalance', 'festBalance', 'mosaics', 'targetMosaicNamespace', 'targetMosaicTemplate'])
     },
     components: {
       DialogPositiveNegative,
@@ -208,6 +208,9 @@
         this.dialog = val
         this.setTransferMosaics()
         if (val === true) {
+          this.fee = 0
+          this.totalAmount = 0
+          this.remainBalance = 0
           if (this.transactionType === 'nem') {
             this.title = 'NEMを送金する'
             this.targetUnit = 'xem'
@@ -218,6 +221,7 @@
             this.title = 'すべて出金する'
             this.setAllamount()
           }
+          if (this.senderItem.address.length >= 40) { this.update() }
         }
       },
       transactionType (val) {
@@ -229,13 +233,7 @@
       'senderItem': {
         handler: function (val, oldVal) {
           console.log('senderItem watch 1', 'newval: ', val, '   oldVal:', oldVal)
-          if (val.address.length >= 40) {
-            this.update()
-          } else {
-            this.fee = 0
-            this.totalAmount = 0
-            this.remainBalance = 0
-          }
+          if (val.address.length >= 40) { this.update() }
         },
         deep: true
       }
@@ -408,11 +406,13 @@
       },
       getTargetMosaic (namespaceId, name) {
         let targetMosaic = { item: [], other: [] }
+        targetMosaic.item[0] = this.targetMosaicTemplate
+        targetMosaic.other[0] = this.targetMosaicTemplate
         this.trMosaics.item.forEach((element) => {
-          if ((element.namespaceId === namespaceId) && (element.name === name)) { targetMosaic.item.push(element) }
+          if ((element.namespaceId === namespaceId) && (element.name === name)) { targetMosaic.item[0] = element }
         })
         this.trMosaics.other.forEach((element) => {
-          if ((element.namespaceId === namespaceId) && (element.name === name)) { targetMosaic.other.push(element) }
+          if ((element.namespaceId === namespaceId) && (element.name === name)) { targetMosaic.item[0] = element }
         })
         console.log('getTargetMosaic', targetMosaic)
         return targetMosaic
@@ -429,9 +429,11 @@
         } else if (this.transactionType === 'mosaics') {
           // Mosaics
           let targetMosaic = this.getTargetMosaic(target.namespaceId, target.name)
+          console.log('targetMosaic', targetMosaic)
           let n = targetMosaic.other[0].divisibility
           this.remainBalance = Math.floor((this.festBalance - this.senderItem.amount) * Math.pow(10, n)) / Math.pow(10, n)
           this.totalAmount = this.senderItem.amount
+          console.log('残高計算 totalAmount', this.totalAmount)
         } else if (this.transactionType === 'all') {
           // すべて出金
           if (this.senderItem.mosaics.length > 0) {

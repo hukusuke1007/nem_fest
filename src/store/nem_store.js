@@ -16,6 +16,7 @@ export default {
     transaction: [],
     transactionStatus: 'none',
     targetMosaicNamespace: MOSAIC_FEST,
+    targetMosaicTemplate: {},
     isLoading: false
   },
   getters: {
@@ -29,6 +30,7 @@ export default {
     transaction: state => state.transaction,
     transactionStatus: state => state.transactionStatus,
     targetMosaicNamespace: state => state.targetMosaicNamespace,
+    targetMosaicTemplate: state => state.targetMosaicTemplate,
     isLoading: state => state.isLoading
   },
   mutations: {
@@ -67,6 +69,10 @@ export default {
     setTargetMosaicNamespace (state, value) {
       console.log('setTargetMosaicNamespace', value)
       state.targetMosaicNamespace = value
+    },
+    setTargetMosaicTemplate (state, value) {
+      console.log('setTargetMosaicTemplate', value)
+      state.targetMosaicTemplate = value
     },
     setIsLoading (state, value) {
       console.log('setIsLoading', value)
@@ -222,6 +228,29 @@ export default {
     },
     doTargetMosaicNamespace ({ commit, getters }, value) {
       commit('setTargetMosaicNamespace', value)
+    },
+    doTargetMosaicTemplate ({ commit, getters }) {
+      let info = getters.targetMosaicNamespace
+      let item = {}
+      nemWrapper.getMosaicNamespace(info.namespaceId)
+        .then((mosaicDefinitions) => {
+          console.log('mosaicDefinitions', mosaicDefinitions)
+          mosaicDefinitions.forEach((element) => {
+            if (info.name === element.id.name) {
+              item.text = element.id.namespaceId + ':' + element.id.name
+              item.namespaceId = element.id.namespaceId
+              item.name = element.id.name
+              item.amount = 0
+              item.divisibility = element.properties.divisibility
+              item.initialSupply = element.properties.initialSupply
+              item.supplyMutable = element.properties.supplyMutable
+              item.transferable = element.properties.transferable
+            }
+          })
+          commit('setTargetMosaicTemplate', item)
+        }).catch((err) => {
+          console.error(err)
+        })
     },
     doIsLoading ({ commit, getters }, value) {
       commit('setIsLoading', value)

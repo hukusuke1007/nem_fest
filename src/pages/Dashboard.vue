@@ -25,18 +25,23 @@
             <div style="text-align: center;">xem<font size="5" style="margin-left: 8px;">{{ nemBalance }}</font></div>
             <div style="text-align: center;">fest<font size="5" style="margin-left: 8px;">{{ festBalance }}</font></div>
             <v-flex>
-              <v-btn color="primary" class="btnLarge" large block @click="tapShowAccount">受け取る</v-btn>
-              <v-btn color="primary" class="btnMedium" large @click="tapSend">送金する</v-btn>
-              <v-btn color="primary" class="btnMedium" large @click="tapSendQRcode">QRコードから<br>送る</v-btn>
-              <v-btn color="grey lighten-4" class="btnLarge" large block @click="tapShowHistory">履歴を見る</v-btn>
-              <v-btn color="grey lighten-4" class="black--text" large @click="tapShowPrivateKey">秘密鍵を表示する</v-btn>
-              <v-btn flat large block @click="tapWalletReset">ウォレットをリセットする</v-btn>
+              <v-flex>
+                <v-btn color="primary" class="btnLarge" large block @click="tapShowAccount">受け取る</v-btn>
+                <v-btn color="primary" class="btnLarge" large block @click="tapSendQRcode('mosaics')">ドリンク・グッズ引き換え</v-btn>
+                <v-btn color="primary" class="btnLarge" large block @click="tapSendQRcode('mosaics')">投票</v-btn>
+              </v-flex>
+              <v-flex>
+                <v-btn color="primary" class="btnMedium" large @click="tapSend">送金する</v-btn>
+                <v-btn color="primary" class="btnMedium" large @click="tapSendQRcode('nem')">QRコードから<br>送る</v-btn>
+                <v-btn color="grey lighten-4" class="btnLarge" large block @click="tapShowHistory">履歴を見る</v-btn>
+                <v-btn color="grey lighten-4" class="black--text" large @click="tapShowPrivateKey">秘密鍵を表示する</v-btn>
+                <v-btn flat large block @click="tapWalletReset">ウォレットをリセットする</v-btn>
+              </v-flex>
             </v-flex>
           </v-flex>
           <v-flex v-else>
             <v-card-text><div v-html="descriptionNotAuth" style="text-align: left;"></div></v-card-text>
-          </v-flex>               
-        
+          </v-flex>
       </v-layout>
       </v-card>
      </v-flex>
@@ -152,6 +157,7 @@
       // デバックのため認証状態にする
       // this.doAuth(true)
       // this.doAuthPassword('aaaaaaaa')
+      this.doTargetMosaicTemplate()
       this.doTitle('ダッシュボード')
       if (this.isAuth === true) {
         this.getWallet()
@@ -176,7 +182,7 @@
     methods: {
       ...mapActions('Top', ['doTitle']),
       ...mapActions('Auth', ['doAuth', 'doAuthPassword']),
-      ...mapActions('Nem', ['doUpdateNemBalance', 'doUpdateMosaicsBalance', 'doObserveTransaction', 'doWalletItem', 'doAddress', 'doPairKey', 'doTransactionStatus']),
+      ...mapActions('Nem', ['doUpdateNemBalance', 'doUpdateMosaicsBalance', 'doObserveTransaction', 'doWalletItem', 'doAddress', 'doPairKey', 'doTransactionStatus', 'doTargetMosaicTemplate']),
       getWallet () {
         dbWrapper.getItem(dbWrapper.KEY_WALLET_INFO)
           .then((result) => {
@@ -194,7 +200,11 @@
         if ((content !== null) && ('data' in content)) {
           console.log(content)
           // this.name = content.data.name
-          this.transactionType = 'nem'
+          if (this.selectBtn === 'nem') {
+            this.transactionType = 'nem'
+          } else if (this.selectBtn === 'mosaics') {
+            this.transactionType = 'mosaics'
+          }
           this.senderItem.address = content.data.addr
           if ('amount' in content.data) {
             this.senderItem.amount = Number(content.data.amount) / Math.pow(10, 6)
@@ -239,7 +249,9 @@
       tapSend () {
         this.isSelectTrans = true
       },
-      tapSendQRcode () {
+      tapSendQRcode (type) {
+        console.log(type)
+        this.selectBtn = type
         this.isShowQRreader = true
       },
       tapShowHistory () {

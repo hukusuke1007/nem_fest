@@ -130,6 +130,17 @@ exports.getUnconfirmedTransaction = (addr) => {
   return promise
 }
 
+// モザイク情報を取得.
+exports.getMosaicNamespace = (namespaceId) => {
+  let promise = new Promise((resolve, reject) => {
+    mosaicHttp.getAllMosaicsGivenNamespace(namespaceId).subscribe(
+      mosaicDefinitions => { resolve(mosaicDefinitions) },
+      error => { reject(error) }
+    )
+  })
+  return promise
+}
+
 // 所有モザイクを取得
 exports.getMosaics = (addr) => {
   let promise = new Promise((resolve, reject) => {
