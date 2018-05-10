@@ -74,6 +74,7 @@
       ...mapGetters('Nem', ['address', 'nemBalance', 'festBalance', 'transaction', 'transactionStatus', 'isLoading'])
     },
     mounted () {
+      this.doTag('history')
       this.doTitle('履歴')
       this.reloadItem()
     },
@@ -101,8 +102,8 @@
       }
     },
     methods: {
+      ...mapActions('Top', ['doTag', 'doTitle']),
       ...mapActions('Auth', ['doAuth']),
-      ...mapActions('Top', ['doTitle']),
       ...mapActions('Nem', ['doAddress', 'doUpdateTransaction', 'doTransactionStatus']),
       reloadItem () {
         this.doUpdateTransaction()

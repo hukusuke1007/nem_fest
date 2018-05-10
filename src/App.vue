@@ -9,9 +9,11 @@
       fixed
       app
      >
-     <v-toolbar-side-icon @click="back">
-      <v-icon color="primary">arrow_back</v-icon>
-     </v-toolbar-side-icon>
+     <div v-if="tag==='history'">
+       <v-toolbar-side-icon @click="back">
+        <v-icon color="primary">arrow_back</v-icon>
+       </v-toolbar-side-icon>
+     </div>
      <v-toolbar-title class="black--text">{{ title }}</v-toolbar-title>
      </v-toolbar>
      <v-content>
@@ -37,7 +39,7 @@ export default {
     naviBar: false
   }),
   computed: {
-    ...mapGetters('Top', ['title'])
+    ...mapGetters('Top', ['tag', 'title'])
   },
   mounted: () => {
   },

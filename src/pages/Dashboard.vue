@@ -158,6 +158,7 @@
       // this.doAuth(true)
       // this.doAuthPassword('aaaaaaaa')
       this.doTargetMosaicTemplate()
+      this.doTag('dashboard')
       this.doTitle('ダッシュボード')
       if (this.isAuth === true) {
         this.getWallet()
@@ -180,7 +181,7 @@
       }
     },
     methods: {
-      ...mapActions('Top', ['doTitle']),
+      ...mapActions('Top', ['doTag', 'doTitle']),
       ...mapActions('Auth', ['doAuth', 'doAuthPassword']),
       ...mapActions('Nem', ['doUpdateNemBalance', 'doUpdateMosaicsBalance', 'doObserveTransaction', 'doWalletItem', 'doAddress', 'doPairKey', 'doTransactionStatus', 'doTargetMosaicTemplate']),
       getWallet () {

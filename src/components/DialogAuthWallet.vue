@@ -61,8 +61,8 @@
                     ></v-text-field>
               </v-form>
             </v-flex>
-            <v-btn color="info" @click="submit" :disabled="!valid">完了</v-btn>
-            <v-btn @click="clear">クリア</v-btn>
+            <v-btn color="info" @click="submit" :disabled="!valid">ログイン</v-btn>
+            <!-- <v-btn v-if="!isExistPass" @click="clear">>クリア</v-btn> -->
             <v-flex>
              <v-btn color="grey" class="white--text" @click="close">閉じる</v-btn>
             </v-flex>
