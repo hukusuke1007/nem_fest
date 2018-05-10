@@ -1,7 +1,6 @@
 import nemWrapper from '@/js/nem_wrapper'
 import nemSDK from 'nem-sdk'
 
-// テスト用にLCNEMを採用
 const MOSAIC_FEST = { namespaceId: 'nems', name: 'festcoin' }
 
 export default {
