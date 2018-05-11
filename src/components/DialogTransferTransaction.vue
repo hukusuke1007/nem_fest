@@ -58,6 +58,7 @@
                         :rules="[rules.amountLimit, rules.amountInput]"
                         required
                         placeholder=""
+                        type="number"
                       ></v-text-field>
                     </v-flex>
                   </v-layout>
@@ -75,6 +76,7 @@
                             :rules="[rules.amountLimit, rules.amountInput]"
                             required
                             placeholder=""
+                            type="number"
                           ></v-text-field>
                         </v-flex>
                       </v-layout>

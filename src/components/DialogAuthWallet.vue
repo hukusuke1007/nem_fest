@@ -192,7 +192,7 @@
               this.$emit('dialog-auth-wallet-close', 'close')
             } else {
               this.isError = true
-              this.dialogMessage = 'パスワードが違います。再度入力してください。'
+              this.dialogMessage = 'パスワードが違います。'
               this.isShowDialogConfirm = true
             }
           }).catch((err) => {
