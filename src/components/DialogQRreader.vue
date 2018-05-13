@@ -24,10 +24,10 @@
           <v-layout row wrap column>
             <v-card>
               <v-card-text>
-                <span style="margin-left: 0px;">xem</span>
-                <span style="margin-left: 4px;">{{ nemBalance }}</span>
-                <span style="margin-left: 30px;">fest</span>
-                <span style="margin-left: 4px;">{{ festBalance }}</span>
+                <span class="currencyLabel headerlabel" style="margin-left: 0px;">fest</span>
+                <span class="amountLabel headerlabel"  style="margin-left: 6px;">{{ festBalance }}</span>
+                <span class="currencyLabel headerlabel" style="margin-left: 34px;">xem</span>
+                <span class="amountLabel headerlabel"  style="margin-left: 6px;">{{ nemBalance }}</span>
               </v-card-text>
             </v-card>
             <v-flex>

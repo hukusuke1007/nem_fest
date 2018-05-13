@@ -6,25 +6,26 @@
     <div class="w-break sideOffset">
       <v-flex xs12 sm6 offset-sm3>
        <v-layout column wrap>
-        <v-card>
           <v-flex>
-            <div style="text-align: center;">
-              <h1>ようこそ！</h1>
-            </div>
-            <v-card-text><div v-html="description" style="text-align: left;"></div></v-card-text>
-            <div style="margin: 100px 0px 32px 0px;">
-              <v-btn large block @click="tapCreate">{{ createBtnName }}</v-btn>
-            </div>
-            <br>
+            <v-flex>
+              <p class="resizeImage">
+                <img :src="logoImage"></img>
+              </p>
+            </v-flex>
+            <v-flex>
+              <div class="label">ようこそ！</div>
+            </v-flex>
+            <v-flex>
+              <v-btn color="originalGrey" class="customBtn white--text" large block @click="tapCreate">{{ createBtnName }}</v-btn>
+            </v-flex>
           </v-flex>
 
-          <DialogAuthWallet v-bind:dialogVal="isShowAuthWallet"
-                       v-on:dialog-auth-wallet-close="tapAuthWalletClose"
-                       v-on:dialog-auth-wallet-notify="tapAuthWalletNotify"></DialogAuthWallet>
-        </v-card>
       </v-layout>
      </v-flex>
     </div>
+    <DialogAuthWallet v-bind:dialogVal="isShowAuthWallet"
+                 v-on:dialog-auth-wallet-close="tapAuthWalletClose"
+                 v-on:dialog-auth-wallet-notify="tapAuthWalletNotify"></DialogAuthWallet>
   </v-container>
 </template>
 
@@ -35,6 +36,7 @@
   export default {
     name: 'topPage',
     data: () => ({
+      logoImage: require('@/assets/logo.png'),
       createBtnName: 'ウォレットを作成する',
       isShowAuthWallet: false,
       description: 'このウォレットの説明文が入ります<br>ユキちゃんへ相談<br>・送受金している最中と完了したときのUIについて<br>・送受金履歴どうしようか<br>・送金画面はプッシュかモーダルか'
@@ -47,13 +49,6 @@
     },
     mounted () {
       this.doTitle('ウォレットの作成')
-
-      // デバック用
-      /*
-      this.doAuth(true)
-      this.doAuthPassword('aaaaaaaa')
-      this.goNextPage()
-      */
       if (this.isAuth === true) {
         this.goNextPage()
       } else {
@@ -98,4 +93,12 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.label {
+  height: 20px;
+  color: #000000;
+  font-family: "Hiragino Sans";
+  font-size: 20px;
+  line-height: 30px;
+  text-align: center;
+}
 </style>

@@ -24,10 +24,10 @@
           <v-layout wrap column>
             <v-card>
               <v-card-text>
-                <span style="margin-left: 0px;">xem</span>
-                <span style="margin-left: 4px;">{{ nemBalance }}</span>
-                <span style="margin-left: 30px;">fest</span>
-                <span style="margin-left: 4px;">{{ festBalance }}</span>
+                <span class="currencyLabel headerlabel" style="margin-left: 0px;">fest</span>
+                <span class="amountLabel headerlabel"  style="margin-left: 6px;">{{ festBalance }}</span>
+                <span class="currencyLabel headerlabel" style="margin-left: 34px;">xem</span>
+                <span class="amountLabel headerlabel"  style="margin-left: 6px;">{{ nemBalance }}</span>
               </v-card-text>
             </v-card>
             <v-flex>
@@ -98,26 +98,42 @@
             <v-card>
               <v-card-title>
               <div v-if="(transactionType==='nem')||(transactionType==='mosaics')" style="margin: 2px, 10px, 2px, 0px; text-align: left;">
-                <div class="grey--text" style="font-size: 1.4em;">数量 {{ senderItem.amount }} {{ targetUnit }}</div>
-                <div class="grey--text" style="font-size: 1.4em;">手数料 {{ fee }} xem</div>
-                <div class="black--text" style="font-size: 2em;">合計 {{ totalAmount }} {{ targetUnit }}</div>
-                <div class="grey--text" style="font-size: 1.2em;">残高 {{ remainBalance }} {{ targetUnit }}</div>
+                <div>
+                  <span class="desLabel">数量</span>
+                  <span class="desLabel" style="margin-left: 2em;">{{ senderItem.amount }}{{ targetUnit }}</span>
+                </div>
+                <div>
+                  <span class="desLabel">手数料</span>
+                  <span class="desLabel" style="margin-left: 1em;">{{ fee }}xem</span>
+                </div>
+                <div>
+                  <span class="desLabel total">合計</span>
+                  <span class="amountLabel total" style="margin-left: 0.3em;">{{ totalAmount }}</span>
+                  <span class="totalUnitLabel">{{ targetUnit }}</span>
+                </div>
+                <!-- <div class="grey--text" style="font-size: 1.2em;">残高 {{ remainBalance }} {{ targetUnit }}</div> -->
               </div>
               <div v-else-if="transactionType==='all'" style="margin: 2px, 10px, 2px, 0px; text-align: left;">
                 <div v-for="(item, index) in senderItem.mosaics">
-                  <div class="grey--text" style="font-size: 1.4em;">数量 {{ item.quantity }} {{ item.name }}</div>
+                  <span class="desLabel">数量</span>
+                  <span class="desLabel" style="margin-left: 2em;">{{ item.quantity }}{{ item.name }}</span>
                 </div>
+                <!-- 
                 <div v-for="(item, index) in senderItem.mosaics">
                   <div class="grey--text" style="font-size: 1.2em;">残高 {{ item.remainBalance }} {{ item.name }}</div>
                 </div>
-                <div class="grey--text" style="font-size: 1.4em;">手数料 {{ fee }} xem</div>
+                -->
+                <div>
+                  <span class="desLabel">手数料</span>
+                  <span class="desLabel" style="margin-left: 1em;">{{ fee }}xem</span>
+                </div>
               </div>
               </v-card-title>
             </v-card>
             <v-flex>
-              <v-btn color="primary" class="btnLarge" large block @click="tapSend" :disabled="!valid">送金する！</v-btn>
+              <v-btn color="originalRed" class="customBtn" large block @click="tapSend" :disabled="!valid">送金する</v-btn>
             </v-flex>
-            <v-btn class="blue--text" flat large block @click="close">キャンセル</v-btn>
+            <v-btn color="primary" class="customBtn" flat large block @click="close">キャンセル</v-btn>
           </v-layout>
         </div>
         </v-card>
@@ -529,8 +545,4 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.btnLarge {
-  font-color: white;
-  height: 60px;
-}
 </style>

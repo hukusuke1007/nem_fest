@@ -24,18 +24,18 @@
           <v-layout row wrap column>
             <v-card>
               <v-card-text>
-                <span style="margin-left: 0px;">xem</span>
-                <span style="margin-left: 4px;">{{ nemBalance }}</span>
-                <span style="margin-left: 30px;">fest</span>
-                <span style="margin-left: 4px;">{{ festBalance }}</span>
+                <span class="currencyLabel headerlabel" style="margin-left: 0px;">fest</span>
+                <span class="amountLabel headerlabel"  style="margin-left: 6px;">{{ festBalance }}</span>
+                <span class="currencyLabel headerlabel" style="margin-left: 34px;">xem</span>
+                <span class="amountLabel headerlabel"  style="margin-left: 6px;">{{ nemBalance }}</span>
               </v-card-text>
             </v-card>
             <v-flex>
-              <v-btn color="primary" class="btnMedium" large @click="tapSend('nem')">xemを送る</v-btn>
-              <v-btn color="primary" class="btnMedium" large @click="tapSend('mosaics')">モザイクを送る</v-btn>
-              <v-btn color="grey lighten-4" class="btnLarge" large block @click="tapSend('all')">すべて出金する</v-btn>
+              <v-btn color="originalBlue" class="customBtn customHalf white--text" large @click="tapSend('nem')">xemを送る</v-btn>
+              <v-btn color="originalBlue" class="customBtn customHalf white--text" large @click="tapSend('mosaics')">モザイクを送る</v-btn>
+              <v-btn color="originalGrey" class="customBtn white--text" large block @click="tapSend('all')">すべて出金する</v-btn>
             </v-flex>
-            <v-btn class="blue--text" flat large block @click="close">ダッシュボードへ戻る</v-btn>
+            <v-btn color="primary" class="customBtn" flat large block @click="close">戻る</v-btn>
           </v-layout>
         </div>
         </v-card>

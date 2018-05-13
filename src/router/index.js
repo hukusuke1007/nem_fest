@@ -19,7 +19,11 @@ import History from '@/pages/History'
 Vue.use(Router)
 Vue.use(Vuetify, {
   theme: {
-    original: colors.purple.base
+    original: colors.purple.base,
+    originalGrey: '#AFB1BF',
+    originalRed: '#E77373',
+    originalBlue: '#5663B8',
+    originalGreen: '#3FAC86'
   },
   options: {
     themeVariations: ['original', 'secondary']

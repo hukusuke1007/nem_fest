@@ -55,12 +55,11 @@ export default {
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: 'Hiragino Sans', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  /* color: #2c3e50; */
 }
 
 .w-break {
@@ -72,7 +71,89 @@ export default {
 .sideOffset {
   margin: 2px 10px 2px 10px;
 }
+
+.currencyLabel {
+  height: 16px;
+  width: 35px;
+  color: #939393;
+  font-family: "Hiragino Sans";
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.amountLabel {
+  height: 27px;
+  color: #0D0D0D;
+  font-family: "Hiragino Sans";
+  font-size: 30px;
+  line-height: 27px;
+  letter-spacing: -1.17px;
+}
+
+.currencyLabel.headerlabel {
+  height: 12px;
+  color: #939393;
+  font-family: "Hiragino Sans";
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.amountLabel.headerlabel {
+  height: 27px;
+  color: #0D0D0D;
+  font-family: "Hiragino Sans";
+  font-size: 18px;
+  letter-spacing: -0.58px;
+  line-height: 27px;
+}
+
+.amountLabel.total {
+  line-height: 40px;
+}
+
+.totalUnitLabel {
+  height: 27px;
+  color: #0D0D0D;
+  font-family: "Hiragino Sans";
+  font-size: 24px;
+  letter-spacing: -0.78px;
+  line-height: 27px;
+}
+
+.customBtn {
+  font-family: "Hiragino Sans";
+  font-size: 16px;
+  height: 70px;
+}
+
+.customBtn.customHalf {
+  width: 43%;
+}
+
+.desLabel {
+  color: #939393;
+  font-family: "Hiragino Sans";
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.desLabel.total {
+  padding: 0.4em 0.6em;
+  /* margin: 2em 0; */
+  color: #FFFFFF;
+  background-color: #DD3030;
+  border-radius: 6px;
+}
+
+p.resizeImage {
+   text-align: center;
+   max-width: 271px; /* 最大幅 */
+   min-width: 220px; /* 最小幅 */
+   margin: 0 auto;
+}
+p.resizeImage img { width: 100%; }
  /*
+}
 a {
   text-decoration: none;
 }

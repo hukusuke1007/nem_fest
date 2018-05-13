@@ -5,45 +5,56 @@
     grid-list-lg>
     <div class="w-break sideOffset">
       <v-flex xs12 sm6 offset-sm3>
-      <v-card>
        <v-layout column wrap>
           <v-flex v-if="isAuth">
-            <v-card-actions>
-             <v-card-title class="grey--text">残高</v-card-title>
-             <v-spacer></v-spacer>
-             <v-menu offset-y>
-             <v-btn slot="activator" fab small flat><v-icon>view_module</v-icon></v-btn>
-              <v-list>
-                <v-subheader>保有モザイク一覧</v-subheader>
-                <v-list-tile v-for="mosaic in mosaics" :key="mosaic.text" @click="">
-                  <v-list-tile-title>{{ mosaic.amount }} {{ mosaic.text }}</v-list-tile-title>
-                </v-list-tile>
-              </v-list>
-            </v-menu>
-            <v-btn fab small flat @click="getWallet" :loading="isLoading"><v-icon>cached</v-icon></v-btn>
-            </v-card-actions>
-            <div style="text-align: center;">xem<font size="5" style="margin-left: 8px;">{{ nemBalance }}</font></div>
-            <div style="text-align: center;">fest<font size="5" style="margin-left: 8px;">{{ festBalance }}</font></div>
-            <v-flex>
-              <v-flex>
-                <v-btn color="primary" class="btnLarge" large block @click="tapShowAccount">受け取る</v-btn>
-                <v-btn color="primary" class="btnLarge" large block @click="tapSendQRcode('mosaics')">ドリンク・グッズ引き換え</v-btn>
-                <v-btn color="primary" class="btnLarge" large block @click="tapSendQRcode('mosaics')">投票</v-btn>
-              </v-flex>
-              <v-flex>
-                <v-btn color="primary" class="btnMedium" large @click="tapSend">送金する</v-btn>
-                <v-btn color="primary" class="btnMedium" large @click="tapSendQRcode('nem')">QRコードから<br>送る</v-btn>
-                <v-btn color="grey lighten-4" class="btnLarge" large block @click="tapShowHistory">履歴を見る</v-btn>
-                <v-btn color="grey lighten-4" class="black--text" large @click="tapShowPrivateKey">秘密鍵を表示する</v-btn>
-                <v-btn flat large block @click="tapWalletReset">ウォレットをリセットする</v-btn>
-              </v-flex>
-            </v-flex>
+              <v-card>
+                <v-card-actions>
+                   <v-card-title class="grey--text" style="font-weight: bold;">残高</v-card-title>
+                   <v-spacer></v-spacer>
+                   <v-menu offset-y>
+                   <v-btn slot="activator" fab small flat><v-icon>view_module</v-icon></v-btn>
+                    <v-list>
+                      <v-subheader>保有モザイク一覧</v-subheader>
+                      <v-list-tile v-for="mosaic in mosaics" :key="mosaic.text" @click="">
+                        <v-list-tile-title>{{ mosaic.amount }} {{ mosaic.text }}</v-list-tile-title>
+                      </v-list-tile>
+                    </v-list>
+                  </v-menu>
+                  <v-btn fab small flat @click="getWallet" :loading="isLoading"><v-icon>cached</v-icon></v-btn>
+                </v-card-actions>
+                <div style="text-align: left; margin-left: 30px;">
+                  <div>
+                    <span class="currencyLabel">fest</span>
+                    <span class="amountLabel" style="margin-left: 22px;">{{ festBalance }}</span>
+                  </div>
+                  <div>
+                    <span class="currencyLabel">xem</span>
+                    <span class="amountLabel" style="margin-left: 20px;">{{ nemBalance }}</span>
+                  </div>
+                </div>
+                <br>
+              </v-card>
+              <div style="margin-top: 10px;">
+                <v-btn color="originalRed" class="customBtn white--text" large block @click="tapShowAccount">受け取る</v-btn>
+                <v-btn color="originalGreen" class="customBtn white--text" large block @click="tapSendQRcode('mosaics')">ドリンク・グッズ引き換え</v-btn>
+                <v-btn color="originalGreen" class="customBtn white--text" large block @click="tapSendQRcode('mosaics')">投票する</v-btn>
+              </div>
+              <div style="margin: 10px 0px 5px 0px;"><v-divider></v-divider></div>
+                <v-btn color="originalBlue" class="customBtn customHalf white--text" large @click="tapSend">送る</v-btn>
+                <v-btn color="originalBlue" class="customBtn customHalf white--text" large @click="tapSendQRcode('nem')">QR読み込み</v-btn>
+              <div style="margin-top: 0px;">
+                <v-btn color="originalGrey" class="customBtn white--text" large block @click="tapShowHistory">履歴を見る</v-btn>
+              </div>
+              <div style="margin-top: 20px;">
+                <v-btn color="primary" class="customBtn" flat large block @click="tapShowPrivateKey">秘密鍵を表示</v-btn>
+                <v-btn color="primary" class="customBtn" flat large block @click="tapWalletReset">ウォレットをリセット</v-btn>
+              </div>
+            
           </v-flex>
           <v-flex v-else>
             <v-card-text><div v-html="descriptionNotAuth" style="text-align: left;"></div></v-card-text>
           </v-flex>
       </v-layout>
-      </v-card>
      </v-flex>
     </div>
     <!-- 受け取る -->
@@ -156,7 +167,7 @@
     mounted () {
       // デバックのため認証状態にする
       // this.doAuth(true)
-      // this.doAuthPassword('aaaaaaaa')
+      // this.doAuthPassword('11110000')
       this.doTargetMosaicTemplate()
       this.doTag('dashboard')
       this.doTitle('ダッシュボード')
