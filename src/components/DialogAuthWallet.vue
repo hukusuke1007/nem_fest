@@ -5,14 +5,14 @@
    transition="dialog-bottom-transition"
    scrollable
   >
-  <v-card flat>
+  <v-card flat class="background">
       <v-container
         fluid
         style="min-height: 0;"
         grid-list-lg
         >
       <v-flex xs12 sm6 offset-sm3>
-        <v-card flat>
+        <v-card flat class="background">
         <div class="w-break sideOffset">
           <v-layout row wrap column>
             <v-flex v-if="!isExistPass">

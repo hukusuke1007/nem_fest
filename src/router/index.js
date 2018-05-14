@@ -20,6 +20,7 @@ Vue.use(Router)
 Vue.use(Vuetify, {
   theme: {
     original: colors.purple.base,
+    background: '#f9f9fb',
     originalGrey: '#AFB1BF',
     originalRed: '#E77373',
     originalBlue: '#5663B8',

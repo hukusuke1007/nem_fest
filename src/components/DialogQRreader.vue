@@ -5,7 +5,7 @@
    transition="dialog-bottom-transition"
    scrollable
   >
-  <v-card flat>
+  <v-card flat class="background">
       <v-toolbar color="blue-grey lighten-5" dark>
         <v-toolbar-title class="black--text">QRコードを読み込む</v-toolbar-title>
         <v-spacer></v-spacer>
@@ -19,7 +19,7 @@
         grid-list-lg
         >
       <v-flex xs12 sm6 offset-sm3>
-        <v-card flat>
+        <v-card flat class="background">
         <div class="w-break sideOffset">
           <v-layout row wrap column>
             <v-card>

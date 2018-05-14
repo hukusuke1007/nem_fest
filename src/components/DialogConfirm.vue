@@ -1,7 +1,7 @@
 <template>
   <v-layout row justify-center>
     <v-dialog v-model="dialog" max-width="500px">
-     <v-card>
+     <v-card class="background">
        <div class="w-break">
          <v-card-title class="headline"><font color="blue">{{ titleVal }}</font></v-card-title>
          <v-card-text v-html="messageVal"></v-card-text>
