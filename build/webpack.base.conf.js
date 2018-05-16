@@ -51,7 +51,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('test'), resolve('./node_modules/nem-library/dist/src/'), resolve('./node_modules/vuetify/dist/')],
+        include: [resolve('src'), resolve('test'), resolve('./node_modules/nem-library/dist/src/')],
         options: {
             presets: ['es2015']
         }
