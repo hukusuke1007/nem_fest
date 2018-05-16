@@ -26,7 +26,7 @@
         </v-fade-transition>
      <!-- </v-container> -->
       <!-- </v-container> -->
-     </v-content>
+    </v-content>
   </v-app>
   <!-- </div> -->
 </template>
