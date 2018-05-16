@@ -131,7 +131,7 @@
               </v-card-title>
             </v-card>
             <v-flex>
-              <v-btn color="originalRed" class="customBtn" large block @click="tapSend" :disabled="!valid">送金する</v-btn>
+              <v-btn color="originalRed" class="customBtn white--text" large block @click="tapSend" :disabled="!valid">送金する</v-btn>
             </v-flex>
             <v-btn color="primary" class="customBtn" flat large block @click="close">キャンセル</v-btn>
           </v-layout>
