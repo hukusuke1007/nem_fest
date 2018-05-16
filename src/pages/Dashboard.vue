@@ -40,8 +40,8 @@
                 <v-btn color="originalGreen" class="customBtn white--text" large block @click="tapSendQRcode('mosaics')">投票する</v-btn>
               </div>
               <div style="margin: 10px 0px 5px 0px;"><v-divider></v-divider></div>
-                <v-btn color="originalBlue" class="customBtn customHalf white--text" large @click="tapSend">送る</v-btn>
-                <v-btn color="originalBlue" class="customBtn customHalf white--text" large @click="tapSendQRcode('nem')">QR読み込み</v-btn>
+                <v-btn color="originalGrey" class="customBtn customHalf white--text" large @click="tapSend">送る</v-btn>
+                <v-btn color="originalGrey" class="customBtn customHalf white--text" large @click="tapSendQRcode('nem')">QR読み込み</v-btn>
               <div style="margin-top: 0px;">
                 <v-btn color="originalGrey" class="customBtn white--text" large block @click="tapShowHistory">履歴を見る</v-btn>
               </div>

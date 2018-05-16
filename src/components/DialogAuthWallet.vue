@@ -16,13 +16,14 @@
         <div class="w-break sideOffset">
           <v-layout row wrap column>
             <v-flex v-if="!isExistPass">
-              <v-card-text><h3>パスワードを作成してください</h3></v-card-text>
+              <v-card-text><h3>4ケタ数字のパスワードを作成してください</h3></v-card-text>
               <v-form v-model="valid" ref="form" lazy-validation>
                     <v-text-field
                       label="新規パスワードを入力"
                       v-model="password"
                       :rules="[rules.passwordLimit, rules.passwordInput]"
                       min="4"
+                      maxlength="4"
                       :append-icon ="hiddenPass ? 'visibility' : 'visibility_off'"
                       :append-icon-cb="() => (hiddenPass = !hiddenPass)"
                       :type="hiddenPass ? 'number' : 'password'"
@@ -35,6 +36,7 @@
                       v-model="comPassword"
                       :rules="[rules.passwordLimit, rules.passwordInput]"
                       min="4"
+                      maxlength="4"
                       :append-icon="hiddenCheckPass ? 'visibility' : 'visibility_off'"
                       :append-icon-cb="() => (hiddenCheckPass = !hiddenCheckPass)"
                       :type="hiddenCheckPass ? 'number' : 'password'"
@@ -45,16 +47,18 @@
               </v-form>
             </v-flex>
             <v-flex v-else>
-              <v-card-text><h3>パスワードを入力してください</h3></v-card-text>
+              <v-card-text><h3>ご自身で決めた4ケタ数字の<br>パスワードを入力してください</h3></v-card-text>
               <v-form v-model="valid" ref="form" lazy-validation>
                     <v-text-field
                       label="パスワードを入力"
                       v-model="password"
                       :rules="[rules.passwordLimit, rules.passwordInput]"
                       min="4"
+                      counter="4"
+                      maxlength="4"
                       :append-icon="hiddenPass ? 'visibility' : 'visibility_off'"
                       :append-icon-cb="() => (hiddenPass = !hiddenPass)"
-                      :type="hiddenPass ? 'number' : 'password'"
+                      :type="hiddenPass ? 'text' : 'password'"
                       required
                       placeholder=""
                       pattern="[0-9]*"
@@ -100,7 +104,7 @@
       hiddenPass: true,
       hiddenCheckPass: true,
       rules: {
-        passwordLimit: (value) => (value && value.length >= 4) || 'パスワードは4文字以上です',
+        passwordLimit: (value) => (value && value.length >= 4) || 'パスワードは4ケタです',
         passwordInput: (value) => {
           const pattern = /^[0-9]+$/
           return pattern.test(value) || '数字を入力してください'
@@ -128,6 +132,16 @@
     watch: {
       dialogVal (val) {
         this.dialog = val
+      },
+      password (val) {
+        if (val.length > 4) {
+          // this.password = val.substr(0, 3)
+        }
+      },
+      comPassword (val) {
+        if (val.length > 4) {
+          this.comPassword = val.substr(0, 3)
+        }
       }
     },
     methods: {
