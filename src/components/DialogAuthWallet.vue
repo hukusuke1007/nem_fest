@@ -23,10 +23,11 @@
                       v-model="password"
                       :rules="[rules.passwordLimit, rules.passwordInput]"
                       min="4"
+                      counter="4"
                       maxlength="4"
                       :append-icon ="hiddenPass ? 'visibility' : 'visibility_off'"
                       :append-icon-cb="() => (hiddenPass = !hiddenPass)"
-                      :type="hiddenPass ? 'number' : 'password'"
+                      :type="hiddenPass ? 'text' : 'password'"
                       required
                       placeholder=""
                       pattern="[0-9]*"
@@ -36,10 +37,11 @@
                       v-model="comPassword"
                       :rules="[rules.passwordLimit, rules.passwordInput]"
                       min="4"
+                      counter="4"
                       maxlength="4"
                       :append-icon="hiddenCheckPass ? 'visibility' : 'visibility_off'"
                       :append-icon-cb="() => (hiddenCheckPass = !hiddenCheckPass)"
-                      :type="hiddenCheckPass ? 'number' : 'password'"
+                      :type="hiddenCheckPass ? 'text' : 'password'"
                       required
                       placeholder=""
                       pattern="[0-9]*"
@@ -132,16 +134,6 @@
     watch: {
       dialogVal (val) {
         this.dialog = val
-      },
-      password (val) {
-        if (val.length > 4) {
-          // this.password = val.substr(0, 3)
-        }
-      },
-      comPassword (val) {
-        if (val.length > 4) {
-          this.comPassword = val.substr(0, 3)
-        }
       }
     },
     methods: {
