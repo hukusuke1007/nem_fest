@@ -84,6 +84,7 @@
                   </div>
                 <v-layout row>
                   <v-flex xs12>
+                    <div class="textField">
                     <v-text-field
                       label="メッセージ"
                       v-model="senderItem.message"
@@ -91,6 +92,7 @@
                       :counter="1024"
                       placeholder="メッセージを入力"
                     ></v-text-field>
+                    </div>
                   </v-flex>
                 </v-layout>
               </v-form>
@@ -545,4 +547,7 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.textField {
+  display: none;
+}
 </style>

@@ -218,18 +218,26 @@
             this.transactionType = 'mosaics'
           }
           this.senderItem.address = content.data.addr
-          if ('amount' in content.data) {
+          // amount
+          if (this.transactionType === 'mosaics') {
+            this.senderItem.amount = 1
+          } else if ('amount' in content.data) {
             this.senderItem.amount = Number(content.data.amount) / Math.pow(10, 6)
           } else {
             this.senderItem.amount = 0
           }
+          // メッセージ.
+          this.senderItem.message = ''
+          /*
           if ('msg' in content.data) {
             this.senderItem.message = content.data.msg
           } else {
             this.senderItem.message = ''
           }
+          */
           this.isShowQRreader = false
           this.isShowTransfer = true
+          console.log('getQRContent', this.selectBtn, this.transactionType)
         }
       },
       resetWallet () {
